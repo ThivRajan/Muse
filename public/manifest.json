@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "muses",
+  "description": "AI Cover Letter Generator",
+  "version": "0.0.0",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["storage", "declarativeContent", "activeTab", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"]
+}
