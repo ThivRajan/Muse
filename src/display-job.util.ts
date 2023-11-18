@@ -1,6 +1,14 @@
 export function displayJob() {
   const getJobPostingClass = () => {
-    return "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0";
+    const url = window.location.toString();
+
+    if (url.startsWith("https://ca.indeed.com/")) {
+      return "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0";
+    } else if (url.startsWith("https://www.linkedin.com")) {
+      return "job-view-layout jobs-details";
+    } else {
+      return "";
+    }
   };
 
   const jobContent = document
