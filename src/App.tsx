@@ -1,3 +1,5 @@
+import { displayJob } from "./display-job.util";
+
 export default function App() {
   const readDOM = async () => {
     const [tab] = await chrome.tabs.query({
@@ -6,25 +8,7 @@ export default function App() {
     });
     chrome.scripting.executeScript({
       target: { tabId: tab.id! },
-      func: () => {
-        const domContent = document.documentElement;
-        const getTextContent = (element: HTMLElement) => {
-          const range = document.createRange();
-          range.selectNode(element);
-
-          const selection = window.getSelection();
-          selection?.removeAllRanges();
-          selection?.addRange(range);
-
-          const textContent = selection?.toString();
-          selection?.removeAllRanges();
-
-          return textContent;
-        };
-
-        const textContent = getTextContent(domContent);
-        alert(textContent);
-      },
+      func: displayJob,
     });
   };
 
