@@ -1,4 +1,4 @@
-export function displayJob() {
+export function parseJob() {
   const getJobPostingClass = () => {
     const url = window.location.toString();
 
