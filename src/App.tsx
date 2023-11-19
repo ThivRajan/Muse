@@ -1,5 +1,5 @@
-import { parseJob } from "./parse-job.util";
-import { parsePdf } from "./parse-pdf.util";
+import { parseJob } from "./utils/parse-job.util";
+import { parsePdf } from "./utils/parse-pdf.util";
 
 export default function App() {
   const handleJobParsing = async () => {
