@@ -1,7 +1,8 @@
 import { parseJob } from "./parse-job.util";
+import { parsePdf } from "./parse-pdf.util";
 
 export default function App() {
-  const handleParsing = async () => {
+  const handleJobParsing = async () => {
     const [tab] = await chrome.tabs.query({
       currentWindow: true,
       active: true,
@@ -17,9 +18,15 @@ export default function App() {
       <h1 className="text-3xl font-bold text-blue-700">Hello world!</h1>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
-        onClick={handleParsing}
+        onClick={handleJobParsing}
       >
         Parse Job Text
+      </button>
+      <button
+        className="text-xl bg-red-500 text-white p-2 rounded hover:brightness-75"
+        onClick={parsePdf}
+      >
+        Parse PDF
       </button>
     </div>
   );
