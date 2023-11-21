@@ -2,18 +2,14 @@ import { parsePdf } from "./parse-pdf.util";
 
 const CHUNK_SIZE = 1024 * 100;
 
+// Convert chunk into chrome storage friendly form before storing
 function setChunkInStorage(key: string, chunk: ArrayBuffer) {
   return new Promise<void>((resolve) => {
-    const uintArray = new Uint8Array(chunk);
-
-    // Convert Uint8Array to base64 string
-    let binary = "";
-    uintArray.forEach((byte) => {
-      binary += String.fromCharCode(byte);
-    });
-    let base64String = btoa(binary);
-
-    // Store the base64 string in Chrome storage
+    const binary = new Uint8Array(chunk).reduce(
+      (acc, currByte) => acc + String.fromCharCode(currByte),
+      ""
+    );
+    const base64String = btoa(binary);
     chrome.storage.local.set({ [key]: base64String }, () => {
       resolve();
     });
@@ -29,18 +25,19 @@ function getAllChunksFromStorage() {
 }
 
 export async function loadFile(fileContents: ArrayBuffer) {
+  // TODO: only clear keys that start with "resumeData_"
   chrome.storage.local.clear();
-  // Split the array buffer into chunks
+
+  // Split the array buffer into storable chunks
   const chunks: ArrayBuffer[] = [];
   for (let i = 0; i < fileContents.byteLength; i += CHUNK_SIZE) {
     const chunk = fileContents.slice(i, i + CHUNK_SIZE);
     chunks.push(chunk);
   }
 
-  // Store the chunks in Chrome storage
-  for (let j = 0; j < chunks.length; j++) {
-    await setChunkInStorage(`resumeData_${j}`, chunks[j]);
-  }
+  chunks.forEach(async (chunk, index) => {
+    await setChunkInStorage(`resumeData_${index}`, chunk);
+  });
 }
 
 export async function parseResume() {
