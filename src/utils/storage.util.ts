@@ -1,6 +1,7 @@
 import { parsePdf } from "./parse-pdf.util";
 
-const CHUNK_SIZE = 1024 * 100;
+const RESUME_CHUNK_SIZE = 1024 * 100;
+const RESUME_KEY_PREFIX = "resumeData_";
 
 // Convert chunk into chrome storage friendly form before storing
 function setChunkInStorage(key: string, chunk: ArrayBuffer) {
@@ -16,7 +17,7 @@ function setChunkInStorage(key: string, chunk: ArrayBuffer) {
   });
 }
 
-function getAllChunksFromStorage() {
+function getAllItemsFromStorage() {
   return new Promise<{ [key: string]: any }>((resolve) => {
     chrome.storage.local.get(null, (items) => {
       resolve(items);
@@ -30,39 +31,33 @@ export async function loadFile(fileContents: ArrayBuffer) {
 
   // Split the array buffer into storable chunks
   const chunks: ArrayBuffer[] = [];
-  for (let i = 0; i < fileContents.byteLength; i += CHUNK_SIZE) {
-    const chunk = fileContents.slice(i, i + CHUNK_SIZE);
+  for (let i = 0; i < fileContents.byteLength; i += RESUME_CHUNK_SIZE) {
+    const chunk = fileContents.slice(i, i + RESUME_CHUNK_SIZE);
     chunks.push(chunk);
   }
 
   chunks.forEach(async (chunk, index) => {
-    await setChunkInStorage(`resumeData_${index}`, chunk);
+    await setChunkInStorage(`${RESUME_KEY_PREFIX}${index}`, chunk);
   });
 }
 
 export async function parseResume() {
-  const items = await getAllChunksFromStorage();
+  const items = await getAllItemsFromStorage();
 
-  // Find all keys that contain chunks of the file
-  const chunkKeys = Object.keys(items).filter((key) =>
-    key.startsWith("resumeData_")
-  );
+  const resumeChunkKeys = Object.keys(items)
+    .filter((key) => key.startsWith(RESUME_KEY_PREFIX))
+    .sort(
+      (keyA, keyB) =>
+        parseInt(keyA.split("_")[1]) - parseInt(keyB.split("_")[1])
+    );
 
-  // Sort chunk keys based on the index (resumeData_0, resumeData_1, ...)
-  chunkKeys.sort((a, b) => {
-    const indexA = parseInt(a.split("_")[1]);
-    const indexB = parseInt(b.split("_")[1]);
-    return indexA - indexB;
-  });
-
-  // Create an ArrayBuffer to hold the reconstructed file
-  const totalSize = chunkKeys.length * CHUNK_SIZE;
-  const reconstructedArrayBuffer = new ArrayBuffer(totalSize);
-  const uint8Array = new Uint8Array(reconstructedArrayBuffer);
+  const totalSize = resumeChunkKeys.length * RESUME_CHUNK_SIZE;
+  const resumeFile = new ArrayBuffer(totalSize);
+  const uint8Array = new Uint8Array(resumeFile);
 
   // Reconstruct the file from chunks
   let offset = 0;
-  for (const key of chunkKeys) {
+  for (const key of resumeChunkKeys) {
     const base64String = items[key];
     const binaryString = atob(base64String);
 
@@ -74,10 +69,8 @@ export async function parseResume() {
 
     // Copy chunk data to the reconstructed ArrayBuffer
     uint8Array.set(chunkUint8Array, offset);
-    offset += CHUNK_SIZE;
+    offset += RESUME_CHUNK_SIZE;
   }
-
-  const resumeFile = reconstructedArrayBuffer;
 
   parsePdf(resumeFile);
 }
