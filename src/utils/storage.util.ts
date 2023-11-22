@@ -25,7 +25,7 @@ function getAllItemsFromStorage() {
   });
 }
 
-export async function loadFile(fileContents: ArrayBuffer) {
+export async function saveFile(fileContents: ArrayBuffer) {
   // TODO: only clear keys that start with "resumeData_"
   chrome.storage.local.clear();
 

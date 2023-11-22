@@ -1,5 +1,5 @@
 import { parseJob } from "./utils/parse-job.util";
-import { loadFile, parseResume } from "./utils/storage.util";
+import { parseResume, saveFile } from "./utils/storage.util";
 
 export default function App() {
   const handleJobParsing = async () => {
@@ -13,7 +13,7 @@ export default function App() {
     });
   };
 
-  const loadResume = async () => {
+  const saveResume = async () => {
     const resumeInput = document.getElementById(
       "resumeInput"
     ) as HTMLInputElement;
@@ -21,7 +21,7 @@ export default function App() {
     const fileContents = await resumeFile?.arrayBuffer();
 
     if (fileContents) {
-      loadFile(fileContents);
+      saveFile(fileContents);
     } else {
       console.error("Unable to read file");
     }
@@ -39,7 +39,7 @@ export default function App() {
       <input type="file" id="resumeInput" />
       <button
         className="text-xl bg-green-500 text-white p-2 rounded hover:brightness-75"
-        onClick={loadResume}
+        onClick={saveResume}
       >
         Save Resume
       </button>
