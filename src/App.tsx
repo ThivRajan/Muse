@@ -29,9 +29,9 @@ export default function App() {
 
   return (
     <div className="w-[300px] p-8">
-      <h1 className="text-3xl font-bold text-blue-700">Hello world!</h1>
+      <h1 className="text-3xl font-bold text-black">Hello world!</h1>
       <button
-        className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
+        className="text-xl bg-yellow-500 text-white p-2 rounded hover:brightness-75"
         onClick={handleJobParsing}
       >
         Parse Job Text
@@ -41,10 +41,10 @@ export default function App() {
         className="text-xl bg-green-500 text-white p-2 rounded hover:brightness-75"
         onClick={loadResume}
       >
-        Load Resume
+        Save Resume
       </button>
       <button
-        className="text-xl bg-red-500 text-white p-2 rounded hover:brightness-75"
+        className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
         onClick={parseResume}
       >
         Parse Resume
