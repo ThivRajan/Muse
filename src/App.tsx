@@ -28,7 +28,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-[300px] p-8">
+    <div className="w-[300px] p-8 flex flex-col gap-2">
       <h1 className="text-3xl font-bold text-black">Hello world!</h1>
       <button
         className="text-xl bg-yellow-500 text-white p-2 rounded hover:brightness-75"
@@ -48,6 +48,9 @@ export default function App() {
         onClick={parseResume}
       >
         Parse Resume
+      </button>
+      <button className="text-xl bg-gray-500 text-white p-2 rounded hover:brightness-75">
+        Generate Cover Letter
       </button>
     </div>
   );
