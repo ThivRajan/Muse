@@ -1,10 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
 import { parseJob } from "./parse-job.util";
 import { parseResume } from "./storage.util";
 
 const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const TOKEN = import.meta.env.VITE_OPENAI_API_KEY;
 
-export async function displayCoverLetter() {
+export async function displayCoverLetter(
+  setIsLoading: Dispatch<SetStateAction<boolean>>
+) {
   const [tab] = await chrome.tabs.query({
     currentWindow: true,
     active: true,
@@ -13,7 +16,7 @@ export async function displayCoverLetter() {
   const handleMessage = async (message: any) => {
     if (message.jobText) {
       const resume = await parseResume();
-      await generateCoverLetter(message.jobText, resume);
+      await generateCoverLetter(message.jobText, resume, setIsLoading);
     }
   };
 
@@ -27,12 +30,17 @@ export async function displayCoverLetter() {
   chrome.runtime.onMessage.removeListener(handleMessage);
 }
 
-async function generateCoverLetter(jobDescription: string, resume: string) {
+async function generateCoverLetter(
+  jobDescription: string,
+  resume: string,
+  setIsLoading: Dispatch<SetStateAction<boolean>>
+) {
   const prompt =
     `Please write a cover letter for the following job description and resume.` +
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}`;
 
+  setIsLoading(true);
   const response = await fetch(GPT_COMPLETION_ENDPOINT, {
     method: "POST",
     headers: {
@@ -44,6 +52,7 @@ async function generateCoverLetter(jobDescription: string, resume: string) {
       messages: [{ role: "user", content: prompt }],
     }),
   });
+  setIsLoading(false);
 
   const responseJSON = await response.json();
   const coverLetter = responseJSON.choices[0].message.content;
