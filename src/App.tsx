@@ -1,3 +1,4 @@
+import { displayCoverLetter } from "./utils/generate-cover-letter.util";
 import { parseJob } from "./utils/parse-job.util";
 import { parseResume, saveFile } from "./utils/storage.util";
 
@@ -49,8 +50,11 @@ export default function App() {
       >
         Parse Resume
       </button>
-      <button className="text-xl bg-gray-500 text-white p-2 rounded hover:brightness-75">
-        Generate Cover Letter
+      <button
+        className="text-xl bg-gray-500 text-white p-2 rounded hover:brightness-75"
+        onClick={displayCoverLetter}
+      >
+        Show Cover Letter
       </button>
     </div>
   );
