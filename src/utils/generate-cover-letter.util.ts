@@ -36,7 +36,9 @@ async function generateCoverLetter(
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
   const prompt =
-    `Please write a cover letter for the following job description and resume.` +
+    `Please write a cover letter for the following job description and resume. ` +
+    `At the top of the cover letter, ` +
+    `add my phone number, name and email (you should have it from my resume) and today's date.` +
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}`;
 
@@ -55,7 +57,18 @@ async function generateCoverLetter(
   setIsLoading(false);
 
   const responseJSON = await response.json();
-  const coverLetter = responseJSON.choices[0].message.content;
+  const coverLetter: string = responseJSON.choices[0].message.content;
 
-  alert(coverLetter);
+  const textFile = new Blob([coverLetter], { type: "text/plain" });
+  const textFileUrl = URL.createObjectURL(textFile);
+
+  chrome.downloads.download(
+    {
+      url: textFileUrl,
+      filename: "Muses Cover Letter.txt",
+    },
+    () => {
+      URL.revokeObjectURL(textFileUrl);
+    }
+  );
 }
