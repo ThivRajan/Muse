@@ -11,27 +11,31 @@ export async function downloadCoverLetter(
     active: true,
   });
 
-  const handleJobTextMessage = async (message: any) => {
-    if (message.jobText) {
-      const resume = await parseResume();
-      const coverLetter = await getCoverLetter(
-        message.jobText,
-        resume,
-        setIsLoading
-      );
-      const pdfFile = await convertTextToPdfBlob(coverLetter);
-      const pdfFileUrl = URL.createObjectURL(pdfFile);
+  const handleJobTextMessage = async ({
+    parsedJobText,
+  }: {
+    parsedJobText: string;
+  }) => {
+    if (!parsedJobText) return;
 
-      chrome.downloads.download(
-        {
-          url: pdfFileUrl,
-          filename: "Muses Cover Letter.pdf",
-        },
-        () => {
-          URL.revokeObjectURL(pdfFileUrl);
-        }
-      );
-    }
+    const resume = await parseResume();
+    const coverLetter = await getCoverLetter(
+      parsedJobText,
+      resume,
+      setIsLoading
+    );
+    const pdfFile = await convertTextToPdfBlob(coverLetter);
+    const pdfFileUrl = URL.createObjectURL(pdfFile);
+
+    chrome.downloads.download(
+      {
+        url: pdfFileUrl,
+        filename: "Muses Cover Letter.pdf",
+      },
+      () => {
+        URL.revokeObjectURL(pdfFileUrl);
+      }
+    );
   };
 
   chrome.runtime.onMessage.addListener(handleJobTextMessage);
