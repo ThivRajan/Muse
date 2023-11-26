@@ -1,7 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
+import { getCoverLetter } from "./get-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
-import { getPrompt } from "./prompt.util";
 import { parseResume } from "./storage.util";
 
 export async function downloadCoverLetter(
@@ -45,33 +45,6 @@ export async function downloadCoverLetter(
     func: parseJobPosting,
   });
   chrome.runtime.onMessage.removeListener(handleJobPostingText);
-}
-
-async function getCoverLetter(
-  jobDescription: string,
-  resume: string,
-  setIsLoading: Dispatch<SetStateAction<boolean>>
-) {
-  const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-  const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
-
-  setIsLoading(true);
-  const response = await fetch(GPT_COMPLETION_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo-1106",
-      messages: [{ role: "user", content: getPrompt(jobDescription, resume) }],
-    }),
-  });
-  setIsLoading(false);
-
-  const responseJSON = await response.json();
-  const coverLetter: string = responseJSON.choices[0].message.content;
-  return coverLetter;
 }
 
 async function convertTextToPdfBlob(text: string) {
