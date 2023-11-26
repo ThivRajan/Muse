@@ -11,7 +11,7 @@ export async function downloadCoverLetter(
     active: true,
   });
 
-  const handleMessage = async (message: any) => {
+  const handleJobTextMessage = async (message: any) => {
     if (message.jobText) {
       const resume = await parseResume();
       const coverLetter = await getCoverLetter(
@@ -34,14 +34,12 @@ export async function downloadCoverLetter(
     }
   };
 
-  chrome.runtime.onMessage.addListener(handleMessage);
-
+  chrome.runtime.onMessage.addListener(handleJobTextMessage);
   await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: parseJob,
   });
-
-  chrome.runtime.onMessage.removeListener(handleMessage);
+  chrome.runtime.onMessage.removeListener(handleJobTextMessage);
 }
 
 async function getCoverLetter(
