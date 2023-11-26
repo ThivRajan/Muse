@@ -3,35 +3,13 @@ import { parsePdf } from "./parse-pdf.util";
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
 
-// Convert chunk into chrome storage friendly form before storing
-function setChunkInStorage(key: string, chunk: ArrayBuffer) {
-  return new Promise<void>((resolve) => {
-    const binary = new Uint8Array(chunk).reduce(
-      (acc, currByte) => acc + String.fromCharCode(currByte),
-      ""
-    );
-    const base64String = btoa(binary);
-    chrome.storage.local.set({ [key]: base64String }, () => {
-      resolve();
-    });
-  });
-}
-
-function getAllItemsFromStorage() {
-  return new Promise<{ [key: string]: any }>((resolve) => {
-    chrome.storage.local.get(null, (items) => {
-      resolve(items);
-    });
-  });
-}
-
-export async function saveFile(fileContents: ArrayBuffer) {
+export async function saveResumeToStorage(resumeFile: ArrayBuffer) {
   chrome.storage.local.clear();
 
   // Split the array buffer into storable chunks
   const chunks: ArrayBuffer[] = [];
-  for (let i = 0; i < fileContents.byteLength; i += RESUME_CHUNK_SIZE) {
-    const chunk = fileContents.slice(i, i + RESUME_CHUNK_SIZE);
+  for (let i = 0; i < resumeFile.byteLength; i += RESUME_CHUNK_SIZE) {
+    const chunk = resumeFile.slice(i, i + RESUME_CHUNK_SIZE);
     chunks.push(chunk);
   }
 
@@ -40,7 +18,7 @@ export async function saveFile(fileContents: ArrayBuffer) {
   });
 }
 
-export async function parseResume() {
+export async function getResumeFromStorage() {
   const items = await getAllItemsFromStorage();
 
   const resumeChunkKeys = Object.keys(items)
@@ -72,4 +50,26 @@ export async function parseResume() {
   }
 
   return parsePdf(resumeFile);
+}
+
+// Convert chunk into storage-friendly format before storing
+function setChunkInStorage(key: string, chunk: ArrayBuffer) {
+  return new Promise<void>((resolve) => {
+    const binary = new Uint8Array(chunk).reduce(
+      (acc, currByte) => acc + String.fromCharCode(currByte),
+      ""
+    );
+    const base64String = btoa(binary);
+    chrome.storage.local.set({ [key]: base64String }, () => {
+      resolve();
+    });
+  });
+}
+
+function getAllItemsFromStorage() {
+  return new Promise<{ [key: string]: any }>((resolve) => {
+    chrome.storage.local.get(null, (items) => {
+      resolve(items);
+    });
+  });
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
-import { saveFile } from "./utils/storage.util";
+import { saveResumeToStorage } from "./utils/storage.util";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +13,7 @@ export default function App() {
     const fileContents = await resumeFile?.arrayBuffer();
 
     if (fileContents) {
-      saveFile(fileContents);
+      saveResumeToStorage(fileContents);
     } else {
       console.error("Unable to read file");
     }
