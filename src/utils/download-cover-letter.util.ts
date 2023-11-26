@@ -11,16 +11,16 @@ export async function downloadCoverLetter(
     active: true,
   });
 
-  const handleJobTextMessage = async ({
-    parsedJobText,
+  const handleJobPostingText = async ({
+    jobPostingText,
   }: {
-    parsedJobText: string;
+    jobPostingText: string;
   }) => {
-    if (!parsedJobText) return;
+    if (!jobPostingText) return;
 
     const resume = await parseResume();
     const coverLetter = await getCoverLetter(
-      parsedJobText,
+      jobPostingText,
       resume,
       setIsLoading
     );
@@ -38,12 +38,12 @@ export async function downloadCoverLetter(
     );
   };
 
-  chrome.runtime.onMessage.addListener(handleJobTextMessage);
+  chrome.runtime.onMessage.addListener(handleJobPostingText);
   await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: parseJobPosting,
   });
-  chrome.runtime.onMessage.removeListener(handleJobTextMessage);
+  chrome.runtime.onMessage.removeListener(handleJobPostingText);
 }
 
 async function getCoverLetter(
