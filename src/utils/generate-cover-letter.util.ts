@@ -18,6 +18,7 @@ export async function generateCoverLetter(
     body: JSON.stringify({
       model: "gpt-3.5-turbo-1106",
       messages: [{ role: "user", content: getPrompt(jobDescription, resume) }],
+      temperature: 0.5,
     }),
   });
   setIsLoading(false);
