@@ -63,15 +63,9 @@ async function generateCoverLetter(
 
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-  // Add a blank page to the document
   const page = pdfDoc.addPage();
-
-  // Get the width and height of the page
   const { width, height } = page.getSize();
   const margin = 50;
-
-  // Draw a string of text toward the top of the page
   const fontSize = 12;
   page.drawText(coverLetter, {
     x: margin,
