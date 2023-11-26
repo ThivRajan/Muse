@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
+const DATE_PLACEHOLDER = "[Date]";
+
 export async function generateCoverLetter(
   jobDescription: string,
   resume: string,
@@ -24,7 +26,10 @@ export async function generateCoverLetter(
   setIsLoading(false);
 
   const responseJSON = await response.json();
-  const coverLetter: string = responseJSON.choices[0].message.content;
+  const coverLetter: string = responseJSON.choices[0].message.content.replace(
+    DATE_PLACEHOLDER,
+    new Date()
+  );
   return coverLetter;
 }
 
@@ -35,7 +40,7 @@ function getPrompt(jobDescription: string, resume: string) {
     `\n\nHere is the resume: \n\n${resume}` +
     `\n\nPlease keep it within 250 words. At the top of the cover letter, ` +
     `add ONLY my phone number, name, email (you should have it from my resume) ` +
-    `and the text '[Date]' (without quotes), in that EXACT order and each on a separate line. ` +
+    `and the text '${DATE_PLACEHOLDER}' (without quotes), in that EXACT order and each on a separate line. ` +
     `Do not include anything outside of than what I asked.`
   );
 }
