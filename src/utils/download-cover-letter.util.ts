@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
-import { getCoverLetter } from "./get-cover-letter.util";
+import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
 import { getResumeFromStorage } from "./resume-storage.util";
 
@@ -20,7 +20,7 @@ export async function downloadCoverLetter(
     if (!jobPostingText) return;
 
     const resume = await getResumeFromStorage();
-    const coverLetter = await getCoverLetter(
+    const coverLetter = await generateCoverLetter(
       jobPostingText,
       resume,
       setIsLoading

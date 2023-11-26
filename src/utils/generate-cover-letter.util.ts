@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-export async function getCoverLetter(
+export async function generateCoverLetter(
   jobDescription: string,
   resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
