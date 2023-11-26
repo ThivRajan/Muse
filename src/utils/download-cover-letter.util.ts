@@ -17,7 +17,23 @@ export async function downloadCoverLetter(
   const handleMessage = async (message: any) => {
     if (message.jobText) {
       const resume = await parseResume();
-      await generateCoverLetter(message.jobText, resume, setIsLoading);
+      const coverLetter = await generateCoverLetter(
+        message.jobText,
+        resume,
+        setIsLoading
+      );
+      const pdfFile = await convertTextToPdfBlob(coverLetter);
+      const pdfFileUrl = URL.createObjectURL(pdfFile);
+
+      chrome.downloads.download(
+        {
+          url: pdfFileUrl,
+          filename: "Muses Cover Letter.pdf",
+        },
+        () => {
+          URL.revokeObjectURL(pdfFileUrl);
+        }
+      );
     }
   };
 
@@ -60,18 +76,7 @@ async function generateCoverLetter(
 
   const responseJSON = await response.json();
   const coverLetter: string = responseJSON.choices[0].message.content;
-  const pdfFile = await convertTextToPdfBlob(coverLetter);
-  const pdfFileUrl = URL.createObjectURL(pdfFile);
-
-  chrome.downloads.download(
-    {
-      url: pdfFileUrl,
-      filename: "Muses Cover Letter.pdf",
-    },
-    () => {
-      URL.revokeObjectURL(pdfFileUrl);
-    }
-  );
+  return coverLetter;
 }
 
 async function convertTextToPdfBlob(text: string) {
