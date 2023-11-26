@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
-import { parseJob } from "./parse-job.util";
+import { parseJobPosting } from "./parse-job-posting.util";
 import { parseResume } from "./storage.util";
 
 export async function downloadCoverLetter(
@@ -41,7 +41,7 @@ export async function downloadCoverLetter(
   chrome.runtime.onMessage.addListener(handleJobTextMessage);
   await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
-    func: parseJob,
+    func: parseJobPosting,
   });
   chrome.runtime.onMessage.removeListener(handleJobTextMessage);
 }

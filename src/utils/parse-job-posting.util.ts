@@ -1,4 +1,4 @@
-export async function parseJob() {
+export async function parseJobPosting() {
   const getJobPostingClass = () => {
     const url = window.location.toString();
 
