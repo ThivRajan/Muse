@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
 import { parseJobPosting } from "./parse-job-posting.util";
+import { getPrompt } from "./prompt.util";
 import { parseResume } from "./storage.util";
 
 export async function downloadCoverLetter(
@@ -51,13 +52,6 @@ async function getCoverLetter(
   resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
-  const prompt =
-    `Please write a cover letter for the following job description and resume. ` +
-    `At the top of the cover letter, ` +
-    `add my phone number, name and email (you should have it from my resume) and today's date.` +
-    `Here is the job description: \n\n${jobDescription}` +
-    `\n\nHere is the resume: \n\n${resume}` +
-    `Please keep it within 250 words.`;
   const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -70,7 +64,7 @@ async function getCoverLetter(
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo-1106",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: getPrompt(jobDescription, resume) }],
     }),
   });
   setIsLoading(false);
