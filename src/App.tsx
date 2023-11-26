@@ -10,10 +10,10 @@ export default function App() {
       "resumeInput"
     ) as HTMLInputElement;
     const resumeFile = resumeInput.files?.[0];
-    const fileContents = await resumeFile?.arrayBuffer();
+    const resumeFileContents = await resumeFile?.arrayBuffer();
 
-    if (fileContents) {
-      saveResumeToStorage(fileContents);
+    if (resumeFileContents) {
+      saveResumeToStorage(resumeFileContents);
     } else {
       console.error("Unable to read file");
     }

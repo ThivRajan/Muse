@@ -3,13 +3,13 @@ import { parsePdf } from "./parse-pdf.util";
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
 
-export async function saveResumeToStorage(resumeFile: ArrayBuffer) {
+export async function saveResumeToStorage(resumeFileContent: ArrayBuffer) {
   chrome.storage.local.clear();
 
   // Split the array buffer into storable chunks
   const chunks: ArrayBuffer[] = [];
-  for (let i = 0; i < resumeFile.byteLength; i += RESUME_CHUNK_SIZE) {
-    const chunk = resumeFile.slice(i, i + RESUME_CHUNK_SIZE);
+  for (let i = 0; i < resumeFileContent.byteLength; i += RESUME_CHUNK_SIZE) {
+    const chunk = resumeFileContent.slice(i, i + RESUME_CHUNK_SIZE);
     chunks.push(chunk);
   }
 
