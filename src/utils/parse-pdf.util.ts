@@ -14,5 +14,5 @@ export async function parsePdf(file: ArrayBuffer) {
     ""
   );
 
-  alert(extractedText);
+  return extractedText;
 }

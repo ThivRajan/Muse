@@ -1,7 +1,11 @@
+import { useState } from "react";
+import { displayCoverLetter } from "./utils/generate-cover-letter.util";
 import { parseJob } from "./utils/parse-job.util";
 import { parseResume, saveFile } from "./utils/storage.util";
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleJobParsing = async () => {
     const [tab] = await chrome.tabs.query({
       currentWindow: true,
@@ -49,9 +53,13 @@ export default function App() {
       >
         Parse Resume
       </button>
-      <button className="text-xl bg-gray-500 text-white p-2 rounded hover:brightness-75">
-        Generate Cover Letter
+      <button
+        className="text-xl bg-gray-500 text-white p-2 rounded hover:brightness-75"
+        onClick={() => displayCoverLetter(setIsLoading)}
+      >
+        Show Cover Letter
       </button>
+      {isLoading && <span>Loading...</span>}
     </div>
   );
 }

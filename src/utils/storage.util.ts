@@ -71,5 +71,5 @@ export async function parseResume() {
     offset += RESUME_CHUNK_SIZE;
   }
 
-  parsePdf(resumeFile);
+  return parsePdf(resumeFile);
 }
