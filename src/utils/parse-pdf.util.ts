@@ -8,7 +8,7 @@ export async function parsePdf(file: ArrayBuffer) {
   const resumePage = await pdfLoading.getPage(1);
   const textContent = await resumePage.getTextContent();
   return textContent.items.reduce(
-    (acc: string, curr) => acc + (curr as TextItem).str + " ",
+    (acc: string, curr) => `${acc}${(curr as TextItem).str} `,
     ""
   );
 }
