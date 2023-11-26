@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
-import { saveResumeToStorage } from "./utils/storage.util";
+import { saveResumeToStorage } from "./utils/resume-storage.util";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);

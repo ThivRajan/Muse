@@ -2,7 +2,7 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
 import { getCoverLetter } from "./get-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
-import { getResumeFromStorage } from "./storage.util";
+import { getResumeFromStorage } from "./resume-storage.util";
 
 export async function downloadCoverLetter(
   setIsLoading: Dispatch<SetStateAction<boolean>>
