@@ -29,7 +29,9 @@ export async function parseJob() {
     return textContent;
   };
 
-  const jobText = jobContent ? getTextContent(jobContent as HTMLElement) : "";
+  const parsedJobText = jobContent
+    ? getTextContent(jobContent as HTMLElement)
+    : "";
 
-  await chrome.runtime.sendMessage({ jobText });
+  await chrome.runtime.sendMessage({ parsedJobText });
 }
