@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { displayCoverLetter } from "./utils/generate-cover-letter.util";
+import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { saveFile } from "./utils/storage.util";
 
 export default function App() {
@@ -31,9 +31,9 @@ export default function App() {
       </button>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
-        onClick={() => displayCoverLetter(setIsLoading)}
+        onClick={() => downloadCoverLetter(setIsLoading)}
       >
-        Show Cover Letter
+        Get Cover Letter
       </button>
       {isLoading && <span>Loading...</span>}
     </div>

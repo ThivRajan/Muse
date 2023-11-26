@@ -6,7 +6,7 @@ import { parseResume } from "./storage.util";
 const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const TOKEN = import.meta.env.VITE_OPENAI_API_KEY;
 
-export async function displayCoverLetter(
+export async function downloadCoverLetter(
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
   const [tab] = await chrome.tabs.query({
@@ -60,24 +60,7 @@ async function generateCoverLetter(
 
   const responseJSON = await response.json();
   const coverLetter: string = responseJSON.choices[0].message.content;
-
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const page = pdfDoc.addPage();
-  const { width, height } = page.getSize();
-  const margin = 50;
-  const fontSize = 12;
-  page.drawText(coverLetter, {
-    x: margin,
-    y: height - 4 * fontSize,
-    size: fontSize,
-    font,
-    color: rgb(0, 0, 0),
-    maxWidth: width - margin * 2,
-  });
-
-  const pdfBytes = await pdfDoc.save();
-  const pdfFile = new Blob([pdfBytes], { type: "application/pdf" });
+  const pdfFile = await convertTextToPdfBlob(coverLetter);
   const pdfFileUrl = URL.createObjectURL(pdfFile);
 
   chrome.downloads.download(
@@ -89,4 +72,24 @@ async function generateCoverLetter(
       URL.revokeObjectURL(pdfFileUrl);
     }
   );
+}
+
+async function convertTextToPdfBlob(text: string) {
+  const pdfDoc = await PDFDocument.create();
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const page = pdfDoc.addPage();
+  const { width, height } = page.getSize();
+  const margin = 50;
+  const fontSize = 12;
+  page.drawText(text, {
+    x: margin,
+    y: height - 4 * fontSize,
+    size: fontSize,
+    font,
+    color: rgb(0, 0, 0),
+    maxWidth: width - margin * 2,
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  return new Blob([pdfBytes], { type: "application/pdf" });
 }
