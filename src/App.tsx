@@ -33,7 +33,7 @@ export default function App() {
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
         onClick={() => downloadCoverLetter(setIsLoading)}
       >
-        Get Cover Letter
+        Download Cover Letter
       </button>
       {isLoading && <span>Loading...</span>}
     </div>
