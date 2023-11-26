@@ -3,9 +3,6 @@ import { Dispatch, SetStateAction } from "react";
 import { parseJob } from "./parse-job.util";
 import { parseResume } from "./storage.util";
 
-const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-const TOKEN = import.meta.env.VITE_OPENAI_API_KEY;
-
 export async function downloadCoverLetter(
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
@@ -17,7 +14,7 @@ export async function downloadCoverLetter(
   const handleMessage = async (message: any) => {
     if (message.jobText) {
       const resume = await parseResume();
-      const coverLetter = await generateCoverLetter(
+      const coverLetter = await getCoverLetter(
         message.jobText,
         resume,
         setIsLoading
@@ -47,7 +44,7 @@ export async function downloadCoverLetter(
   chrome.runtime.onMessage.removeListener(handleMessage);
 }
 
-async function generateCoverLetter(
+async function getCoverLetter(
   jobDescription: string,
   resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
@@ -59,13 +56,15 @@ async function generateCoverLetter(
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}` +
     `Please keep it within 250 words.`;
+  const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+  const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
   setIsLoading(true);
   const response = await fetch(GPT_COMPLETION_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo-1106",
