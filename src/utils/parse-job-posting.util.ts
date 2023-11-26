@@ -1,4 +1,4 @@
-export async function parseJob() {
+export async function parseJobPosting() {
   const getJobPostingClass = () => {
     const url = window.location.toString();
 
@@ -29,7 +29,9 @@ export async function parseJob() {
     return textContent;
   };
 
-  const jobText = jobContent ? getTextContent(jobContent as HTMLElement) : "";
+  const jobPostingText = jobContent
+    ? getTextContent(jobContent as HTMLElement)
+    : "";
 
-  await chrome.runtime.sendMessage({ jobText });
+  await chrome.runtime.sendMessage({ jobPostingText });
 }

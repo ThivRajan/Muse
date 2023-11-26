@@ -7,12 +7,8 @@ export async function parsePdf(file: ArrayBuffer) {
   const pdfLoading = await pdfjs.getDocument(file).promise;
   const resumePage = await pdfLoading.getPage(1);
   const textContent = await resumePage.getTextContent();
-
-  const textItems = textContent.items;
-  const extractedText = textItems.reduce(
-    (acc: string, curr) => acc + (curr as TextItem).str + " ",
+  return textContent.items.reduce(
+    (acc: string, curr) => `${acc}${(curr as TextItem).str} `,
     ""
   );
-
-  return extractedText;
 }
