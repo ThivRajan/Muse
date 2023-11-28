@@ -28,7 +28,7 @@ export async function generateCoverLetter(
   const responseJSON = await response.json();
   const coverLetter: string = responseJSON.choices[0].message.content.replace(
     DATE_PLACEHOLDER,
-    new Date()
+    getFormattedDate()
   );
   return coverLetter;
 }
@@ -43,4 +43,12 @@ function getPrompt(jobDescription: string, resume: string) {
     `and the text '${DATE_PLACEHOLDER}' (without quotes), in that EXACT order and each on a separate line. ` +
     `Do not include anything outside of than what I asked.`
   );
+}
+
+function getFormattedDate() {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
 }
