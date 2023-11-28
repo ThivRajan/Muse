@@ -26,27 +26,8 @@ export async function downloadCoverLetter(
       resume,
       setIsLoading
     );
-    const pdfFile = await convertTextToPdfBlob(coverLetter);
-    const pdfFileUrl = URL.createObjectURL(pdfFile);
-
-    const doc = new Document({
-      sections: [
-        {
-          children: coverLetter.split("\n").map(
-            (paragraph) =>
-              new Paragraph({
-                children: [new TextRun({ text: paragraph, font: "Helvetica" })],
-              })
-          ),
-        },
-      ],
-    });
-
-    const docxFile = await Packer.toBlob(doc);
-    const docxFileUrl = URL.createObjectURL(docxFile);
-
-    downloadFile(pdfFileUrl, "pdf");
-    downloadFile(docxFileUrl, "docx");
+    downloadPdf(coverLetter);
+    downloadDocx(coverLetter);
   };
 
   chrome.runtime.onMessage.addListener(handleJobPostingText);
@@ -55,6 +36,32 @@ export async function downloadCoverLetter(
     func: parseJobPosting,
   });
   chrome.runtime.onMessage.removeListener(handleJobPostingText);
+}
+
+async function downloadPdf(coverLetter: string) {
+  const pdfFile = await convertTextToPdfBlob(coverLetter);
+  const pdfFileUrl = URL.createObjectURL(pdfFile);
+  downloadFile(pdfFileUrl, "pdf");
+}
+
+async function downloadDocx(coverLetter: string) {
+  const doc = new Document({
+    sections: [
+      {
+        children: coverLetter.split("\n").map(
+          (paragraph) =>
+            new Paragraph({
+              children: [new TextRun({ text: paragraph, font: "Helvetica" })],
+            })
+        ),
+      },
+    ],
+  });
+
+  const docxFile = await Packer.toBlob(doc);
+  const docxFileUrl = URL.createObjectURL(docxFile);
+
+  downloadFile(docxFileUrl, "docx");
 }
 
 function downloadFile(url: string, extension: "pdf" | "docx") {
