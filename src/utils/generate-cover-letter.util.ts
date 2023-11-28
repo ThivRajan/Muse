@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-const DATE_PLACEHOLDER = "[Date]";
+const DATE_TOKEN = "[Date]";
 
 export async function generateCoverLetter(
   jobDescription: string,
@@ -27,14 +27,16 @@ export async function generateCoverLetter(
 
   const responseJSON = await response.json();
   const coverLetter: string = responseJSON.choices[0].message.content.replace(
-    DATE_PLACEHOLDER,
+    DATE_TOKEN,
     getFormattedDate()
   );
   return coverLetter;
 }
 
 function getPrompt(jobDescription: string, resume: string) {
-  const headerItems = ["phone number", "name", "emails"].join(", ");
+  const headerItems = ["name", "my location", "email", "phone number"].join(
+    ", "
+  );
   const wordCount = "250";
 
   return (
@@ -42,7 +44,7 @@ function getPrompt(jobDescription: string, resume: string) {
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}` +
     `\n\nPlease keep it within ${wordCount} words. At the top of the cover letter, ` +
-    `add ONLY ${headerItems}, and '${DATE_PLACEHOLDER}' (without quotes), ` +
+    `add ONLY ${headerItems}, and ${DATE_TOKEN}, ` +
     `in that EXACT order and each on a separate line. ` +
     `Do not include anything outside of than what I asked.`
   );
