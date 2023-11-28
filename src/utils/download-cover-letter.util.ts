@@ -45,25 +45,8 @@ export async function downloadCoverLetter(
     const docxFile = await Packer.toBlob(doc);
     const docxFileUrl = URL.createObjectURL(docxFile);
 
-    chrome.downloads.download(
-      {
-        url: pdfFileUrl,
-        filename: "Muses Cover Letter.pdf",
-      },
-      () => {
-        URL.revokeObjectURL(pdfFileUrl);
-      }
-    );
-
-    chrome.downloads.download(
-      {
-        url: docxFileUrl,
-        filename: "Muses Cover Letter.docx",
-      },
-      () => {
-        URL.revokeObjectURL(docxFileUrl);
-      }
-    );
+    downloadFile(pdfFileUrl, "pdf");
+    downloadFile(docxFileUrl, "docx");
   };
 
   chrome.runtime.onMessage.addListener(handleJobPostingText);
@@ -72,6 +55,18 @@ export async function downloadCoverLetter(
     func: parseJobPosting,
   });
   chrome.runtime.onMessage.removeListener(handleJobPostingText);
+}
+
+function downloadFile(url: string, extension: "pdf" | "docx") {
+  chrome.downloads.download(
+    {
+      url,
+      filename: `Muses Cover Letter.${extension}`,
+    },
+    () => {
+      URL.revokeObjectURL(url);
+    }
+  );
 }
 
 async function convertTextToPdfBlob(text: string) {
