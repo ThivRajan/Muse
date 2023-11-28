@@ -32,11 +32,12 @@ export async function downloadCoverLetter(
     const doc = new Document({
       sections: [
         {
-          children: [
-            new Paragraph({
-              children: [new TextRun(coverLetter)],
-            }),
-          ],
+          children: coverLetter.split("\n").map(
+            (paragraph) =>
+              new Paragraph({
+                children: [new TextRun(paragraph)],
+              })
+          ),
         },
       ],
     });
