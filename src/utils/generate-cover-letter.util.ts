@@ -10,6 +10,8 @@ export async function generateCoverLetter(
   const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
+  console.log({ prompt: getPrompt(jobDescription, resume) });
+
   setIsLoading(true);
   const response = await fetch(GPT_COMPLETION_ENDPOINT, {
     method: "POST",
@@ -37,16 +39,16 @@ function getPrompt(jobDescription: string, resume: string) {
   const headerItems = ["name", "my location", "email", "phone number"].join(
     ", "
   );
-  const wordCount = "250";
+  const wordCount = "200";
 
-  const contentPrompt = `Please write a cover letter based on this resume and job description that you think will get you hired.`;
+  const contentPrompt =
+    `Please craft a cover letter within ${wordCount} words using the provided and job description. ` +
+    `Ensure the cover letter relates the resume's experience ` +
+    `to demonstrate how it aligns with the job description, showcasing value.`;
 
   const formattingPrompt =
-    `Please keep it within ${wordCount} words. ` +
-    `At the top of the cover letter, ` +
-    `add ONLY ${headerItems}, and ${DATE_TOKEN}, ` +
-    `in that EXACT order and each on a separate line. ` +
-    `Do not include anything outside of than what I asked.`;
+    `Include ONLY the following details at the top of the cover letter in this EXACT order, each on a separate line:` +
+    `${headerItems}, and ${DATE_TOKEN}.`;
 
   return (
     `I am going to send you my resume along with a job description. ` +
