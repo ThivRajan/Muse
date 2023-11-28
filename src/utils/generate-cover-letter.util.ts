@@ -34,13 +34,16 @@ export async function generateCoverLetter(
 }
 
 function getPrompt(jobDescription: string, resume: string) {
+  const headerItems = ["phone number", "name", "emails"].join(", ");
+  const wordCount = "250";
+
   return (
     `Please write a cover letter for the following job description and resume. ` +
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}` +
-    `\n\nPlease keep it within 250 words. At the top of the cover letter, ` +
-    `add ONLY my phone number, name, email (you should have it from my resume) ` +
-    `and the text '${DATE_PLACEHOLDER}' (without quotes), in that EXACT order and each on a separate line. ` +
+    `\n\nPlease keep it within ${wordCount} words. At the top of the cover letter, ` +
+    `add ONLY ${headerItems}, and '${DATE_PLACEHOLDER}' (without quotes), ` +
+    `in that EXACT order and each on a separate line. ` +
     `Do not include anything outside of than what I asked.`
   );
 }
