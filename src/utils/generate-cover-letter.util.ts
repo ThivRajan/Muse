@@ -10,8 +10,6 @@ export async function generateCoverLetter(
   const GPT_COMPLETION_ENDPOINT = "https://api.openai.com/v1/chat/completions";
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-  console.log({ prompt: getPrompt(jobDescription, resume) });
-
   setIsLoading(true);
   const response = await fetch(GPT_COMPLETION_ENDPOINT, {
     method: "POST",

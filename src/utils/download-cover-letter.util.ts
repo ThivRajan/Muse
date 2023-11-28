@@ -1,3 +1,4 @@
+import { Document, Packer, Paragraph, TextRun } from "docx";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
@@ -25,18 +26,8 @@ export async function downloadCoverLetter(
       resume,
       setIsLoading
     );
-    const pdfFile = await convertTextToPdfBlob(coverLetter);
-    const pdfFileUrl = URL.createObjectURL(pdfFile);
-
-    chrome.downloads.download(
-      {
-        url: pdfFileUrl,
-        filename: "Muses Cover Letter.pdf",
-      },
-      () => {
-        URL.revokeObjectURL(pdfFileUrl);
-      }
-    );
+    downloadPdf(coverLetter);
+    downloadDocx(coverLetter);
   };
 
   chrome.runtime.onMessage.addListener(handleJobPostingText);
@@ -45,6 +36,44 @@ export async function downloadCoverLetter(
     func: parseJobPosting,
   });
   chrome.runtime.onMessage.removeListener(handleJobPostingText);
+}
+
+async function downloadPdf(coverLetter: string) {
+  const pdfFile = await convertTextToPdfBlob(coverLetter);
+  const pdfFileUrl = URL.createObjectURL(pdfFile);
+  downloadFile(pdfFileUrl, "pdf");
+}
+
+async function downloadDocx(coverLetter: string) {
+  const doc = new Document({
+    sections: [
+      {
+        children: coverLetter.split("\n").map(
+          (paragraph) =>
+            new Paragraph({
+              children: [new TextRun({ text: paragraph, font: "Helvetica" })],
+            })
+        ),
+      },
+    ],
+  });
+
+  const docxFile = await Packer.toBlob(doc);
+  const docxFileUrl = URL.createObjectURL(docxFile);
+
+  downloadFile(docxFileUrl, "docx");
+}
+
+function downloadFile(url: string, extension: "pdf" | "docx") {
+  chrome.downloads.download(
+    {
+      url,
+      filename: `Muses Cover Letter.${extension}`,
+    },
+    () => {
+      URL.revokeObjectURL(url);
+    }
+  );
 }
 
 async function convertTextToPdfBlob(text: string) {
