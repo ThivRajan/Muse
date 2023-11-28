@@ -35,7 +35,7 @@ export async function downloadCoverLetter(
           children: coverLetter.split("\n").map(
             (paragraph) =>
               new Paragraph({
-                children: [new TextRun(paragraph)],
+                children: [new TextRun({ text: paragraph, font: "Helvetica" })],
               })
           ),
         },
