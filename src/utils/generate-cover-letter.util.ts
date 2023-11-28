@@ -39,19 +39,20 @@ function getPrompt(jobDescription: string, resume: string) {
   );
   const wordCount = "250";
 
+  const contentPrompt = `Please write a cover letter based on this resume and job description that you think will get you hired.`;
+
   const formattingPrompt =
     `Please keep it within ${wordCount} words. ` +
     `At the top of the cover letter, ` +
     `add ONLY ${headerItems}, and ${DATE_TOKEN}, ` +
     `in that EXACT order and each on a separate line. ` +
-    `Do not include anything outside of than what I asked. `;
+    `Do not include anything outside of than what I asked.`;
 
   return (
     `I am going to send you my resume along with a job description. ` +
     `Here is the job description: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}` +
-    `\n\nPlease write a cover letter based on this resume and job description that you think will get you hired.` +
-    formattingPrompt
+    `\n\n${contentPrompt} ${formattingPrompt}`
   );
 }
 
