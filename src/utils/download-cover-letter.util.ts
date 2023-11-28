@@ -1,3 +1,4 @@
+import { Document, Packer, Paragraph, TextRun } from "docx";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
@@ -28,6 +29,21 @@ export async function downloadCoverLetter(
     const pdfFile = await convertTextToPdfBlob(coverLetter);
     const pdfFileUrl = URL.createObjectURL(pdfFile);
 
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              children: [new TextRun(coverLetter)],
+            }),
+          ],
+        },
+      ],
+    });
+
+    const docxFile = await Packer.toBlob(doc);
+    const docxFileUrl = URL.createObjectURL(docxFile);
+
     chrome.downloads.download(
       {
         url: pdfFileUrl,
@@ -35,6 +51,16 @@ export async function downloadCoverLetter(
       },
       () => {
         URL.revokeObjectURL(pdfFileUrl);
+      }
+    );
+
+    chrome.downloads.download(
+      {
+        url: docxFileUrl,
+        filename: "Muses Cover Letter.docx",
+      },
+      () => {
+        URL.revokeObjectURL(docxFileUrl);
       }
     );
   };
