@@ -1,13 +1,18 @@
 export async function parseJobPosting() {
   const getJobPostingClass = () => {
     const url = window.location.toString();
+    const hostname = url
+      .replace("http://", "")
+      .replace("https://", "")
+      .split("/")[0];
 
-    if (url.startsWith("https://ca.indeed.com/")) {
-      return "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0";
-    } else if (url.startsWith("https://www.linkedin.com")) {
-      return "job-view-layout jobs-details";
-    } else {
-      return "";
+    switch (hostname) {
+      case "ca.indeed.com":
+        return "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0";
+      case "www.linkedin.com":
+        return "job-view-layout jobs-details";
+      default:
+        return "";
     }
   };
 
