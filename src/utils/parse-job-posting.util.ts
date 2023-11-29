@@ -8,17 +8,30 @@ export async function parseJobPosting() {
 
     switch (hostname) {
       case "ca.indeed.com":
-        return "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0";
+        return [
+          "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0",
+        ];
       case "www.linkedin.com":
-        return "job-view-layout jobs-details";
+        return ["job-view-layout jobs-details"];
+      case "www.monster.ca":
+        return [
+          "jobview-containerstyles__JobViewCardWrapper-sc-16af7k7-0 kdCJsu",
+          "jobview-containerstyles__JobViewWrapper-sc-16af7k7-1 gfygNF",
+        ];
       default:
-        return "";
+        return [];
     }
   };
 
-  const jobContent = document
-    .getElementsByClassName(getJobPostingClass())
-    .item(0);
+  const jobPostingClass = getJobPostingClass().find(
+    (postingClass) => document.getElementsByClassName(postingClass).length
+  );
+
+  if (!jobPostingClass) {
+    return "";
+  }
+
+  const jobContent = document.getElementsByClassName(jobPostingClass).item(0);
 
   const getTextContent = (element: HTMLElement) => {
     const range = document.createRange();
