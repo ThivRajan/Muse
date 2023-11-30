@@ -10,6 +10,7 @@ export async function parseJobPosting() {
       case "ca.indeed.com":
         return [
           "fastviewjob jobsearch-ViewJobLayout--embedded css-1lo7kga eu4oa1w0",
+          "jobsearch-JobComponent css-u4y1in eu4oa1w0 jobsearch-JobComponent-bottomDivider",
         ];
       case "www.linkedin.com":
         return ["job-view-layout jobs-details"];
