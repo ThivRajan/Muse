@@ -24,6 +24,8 @@ export async function parseJobPosting() {
         ];
       case "www.glassdoor.ca":
         return ["JobDetails_jobDetailsContainer__sS1W1"];
+      case "www.careerbuilder.ca":
+        return ["data-display dn relative jdp-active"];
       default:
         return [];
     }
