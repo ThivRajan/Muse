@@ -7,6 +7,7 @@ export async function saveResumeToStorage(
   resumeFileContent: ArrayBuffer,
   resumeFileName: string
 ) {
+  // TODO: Find a way to clear only local storage related to app
   chrome.storage.local.clear();
   chrome.storage.local.set({ resumeFileName });
 
