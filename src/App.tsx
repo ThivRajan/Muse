@@ -38,13 +38,16 @@ export default function App() {
       <h1 className="text-3xl font-bold text-black">Muses</h1>
       <div className="flex flex-col gap-2">
         <input type="file" id="resumeInput" className="hidden" />
-        <label
-          htmlFor="resumeInput"
-          className="bg-red-300 rounded w-fit p-2 text-white text-xl cursor-pointer"
-        >
-          Browse for Resume
+        <label htmlFor="resumeInput" className="flex gap-2 items-center">
+          <span className="bg-red-300 rounded w-fit p-1 text-white text-md cursor-pointer">
+            Choose Resume
+          </span>
+          {resumeFileName ? (
+            <span>{resumeFileName}</span>
+          ) : (
+            <span>No resume chosen</span>
+          )}
         </label>
-        {!!resumeFileName && <div>Current Resume: {resumeFileName}</div>}
         <button
           className="text-xl bg-green-500 text-white p-2 rounded hover:brightness-75"
           onClick={updateResume}
