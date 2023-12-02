@@ -17,7 +17,7 @@ export default function App() {
     }
   };
 
-  const saveResume = async () => {
+  const updateResume = async () => {
     const resumeInput = document.getElementById(
       "resumeInput"
     ) as HTMLInputElement;
@@ -34,22 +34,24 @@ export default function App() {
   };
 
   return (
-    <div className="w-[300px] p-8 flex flex-col gap-2">
+    <div className="w-[300px] p-8 flex flex-col gap-6">
       <h1 className="text-3xl font-bold text-black">Muses</h1>
-      <input type="file" id="resumeInput" className="hidden" />
-      <label
-        htmlFor="resumeInput"
-        className="bg-red-300 rounded w-fit p-2 text-white text-xl cursor-pointer"
-      >
-        Browse for Resume
-      </label>
-      {!!resumeFileName && <span>Current Resume: {resumeFileName}</span>}
-      <button
-        className="text-xl bg-green-500 text-white p-2 rounded hover:brightness-75"
-        onClick={saveResume}
-      >
-        Save Resume
-      </button>
+      <div className="flex flex-col gap-2">
+        <input type="file" id="resumeInput" className="hidden" />
+        <label
+          htmlFor="resumeInput"
+          className="bg-red-300 rounded w-fit p-2 text-white text-xl cursor-pointer"
+        >
+          Browse for Resume
+        </label>
+        {!!resumeFileName && <div>Current Resume: {resumeFileName}</div>}
+        <button
+          className="text-xl bg-green-500 text-white p-2 rounded hover:brightness-75"
+          onClick={updateResume}
+        >
+          Update Resume
+        </button>
+      </div>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
         onClick={() => downloadCoverLetter(setIsLoading)}
