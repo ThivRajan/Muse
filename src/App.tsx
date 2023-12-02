@@ -6,10 +6,14 @@ import {
   saveResumeToStorage,
 } from "./utils/resume-storage.util";
 
+const INITIAL_RESUME_FILE = {
+  name: "",
+  contents: "",
+};
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
-  const [resumeFileName, setResumeFileName] = useState("");
-  const [resume, setResume] = useState("");
+  const [resumeFile, setResumeFile] = useState(INITIAL_RESUME_FILE);
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -19,15 +23,17 @@ export default function App() {
   const clearResumeFile = () => {
     // TODO: Find a way to clear only local storage related to app
     chrome.storage.local.clear();
-    setResumeFileName("");
+    setResumeFile(INITIAL_RESUME_FILE);
   };
 
   const getResumeFileName = async () => {
-    const fileName = await chrome.storage.local.get("resumeFileName");
-    const resume = await getResumeFromStorage();
-    if (fileName) {
-      setResumeFileName(fileName.resumeFileName);
-      setResume(resume);
+    const name = await chrome.storage.local.get("resumeFileName");
+    const contents = await getResumeFromStorage();
+    if (name && contents) {
+      setResumeFile({
+        name: name.resumeFileName,
+        contents,
+      });
     }
   };
 
@@ -38,9 +44,11 @@ export default function App() {
 
     if (resumeFileContents) {
       await saveResumeToStorage(resumeFileContents, resumeFileName);
-      const parsedResume = await parsePdf(resumeFileContents);
-      setResumeFileName(resumeFileName);
-      setResume(parsedResume);
+      const parsedContents = await parsePdf(resumeFileContents);
+      setResumeFile({
+        name: resumeFileName,
+        contents: parsedContents,
+      });
     } else {
       console.error("Unable to read file");
     }
@@ -62,8 +70,8 @@ export default function App() {
             <span className="bg-red-300 rounded w-fit p-1 text-white text-md cursor-pointer">
               Choose Resume
             </span>
-            {resumeFileName ? (
-              <span>{resumeFileName}</span>
+            {resumeFile.name ? (
+              <span>{resumeFile.name}</span>
             ) : (
               <span>No resume chosen</span>
             )}
@@ -78,7 +86,7 @@ export default function App() {
       </div>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
-        onClick={() => downloadCoverLetter(resume, setIsLoading)}
+        onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
       >
         Download Cover Letter
       </button>
