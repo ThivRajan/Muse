@@ -3,8 +3,12 @@ import { parsePdf } from "./parse-pdf.util";
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
 
-export async function saveResumeToStorage(resumeFileContent: ArrayBuffer) {
+export async function saveResumeToStorage(
+  resumeFileContent: ArrayBuffer,
+  resumeFileName: string
+) {
   chrome.storage.local.clear();
+  chrome.storage.local.set({ resumeFileName });
 
   // Split the array buffer into storable chunks
   const chunks: ArrayBuffer[] = [];
