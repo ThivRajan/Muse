@@ -1,10 +1,15 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
-import { saveResumeToStorage } from "./utils/resume-storage.util";
+import { parsePdf } from "./utils/parse-pdf.util";
+import {
+  getResumeFromStorage,
+  saveResumeToStorage,
+} from "./utils/resume-storage.util";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [resumeFileName, setResumeFileName] = useState("");
+  const [resume, setResume] = useState("");
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -19,8 +24,10 @@ export default function App() {
 
   const getResumeFileName = async () => {
     const fileName = await chrome.storage.local.get("resumeFileName");
+    const resume = await getResumeFromStorage();
     if (fileName) {
       setResumeFileName(fileName.resumeFileName);
+      setResume(resume);
     }
   };
 
@@ -31,7 +38,9 @@ export default function App() {
 
     if (resumeFileContents) {
       await saveResumeToStorage(resumeFileContents, resumeFileName);
+      const parsedResume = await parsePdf(resumeFileContents);
       setResumeFileName(resumeFileName);
+      setResume(parsedResume);
     } else {
       console.error("Unable to read file");
     }
@@ -69,7 +78,7 @@ export default function App() {
       </div>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
-        onClick={() => downloadCoverLetter(setIsLoading)}
+        onClick={() => downloadCoverLetter(resume, setIsLoading)}
       >
         Download Cover Letter
       </button>
