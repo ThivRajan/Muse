@@ -73,7 +73,10 @@ export default function App() {
           {resumeFile.name || "Choose resume"}
         </label>
         {!!resumeFile.name && (
-          <MdClose className="hover:text-red-500 cursor-pointer text-2xl" />
+          <MdClose
+            className="hover:text-red-500 cursor-pointer text-2xl"
+            onClick={clearResumeFile}
+          />
         )}
       </div>
       <button
