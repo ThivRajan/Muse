@@ -68,19 +68,19 @@ export default function App() {
         />
         <label
           htmlFor="resumeInput"
-          className="cursor-pointer hover:text-gray-600 hover:underline"
+          className="cursor-pointer hover:text-gray-600 hover:underline transition"
         >
           {resumeFile.name || "Choose resume"}
         </label>
         {!!resumeFile.name && (
           <MdClose
-            className="hover:text-red-500 cursor-pointer text-2xl"
+            className="hover:text-red-500 cursor-pointer text-2xl transition"
             onClick={clearResumeFile}
           />
         )}
       </div>
       <button
-        className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
+        className="text-xl bg-blue-500 hover:bg-blue-700 text-white p-2 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
       >
         Download Cover Letter
