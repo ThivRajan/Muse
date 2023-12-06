@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { MdClose } from "react-icons/md";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parsePdf } from "./utils/parse-pdf.util";
 import {
@@ -72,12 +73,7 @@ export default function App() {
           {resumeFile.name || "Choose resume"}
         </label>
         {!!resumeFile.name && (
-          <span
-            className="hover:text-red-500 cursor-pointer"
-            onClick={clearResumeFile}
-          >
-            x
-          </span>
+          <MdClose className="hover:text-red-500 cursor-pointer text-2xl" />
         )}
       </div>
       <button
