@@ -1,4 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { FaDownload } from "react-icons/fa6";
+import { IoDocumentTextSharp } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parsePdf } from "./utils/parse-pdf.util";
@@ -56,7 +58,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-[300px] p-8 flex flex-col gap-2">
+    <div className="w-[330px] p-8 flex flex-col gap-2">
       <h1 className="text-3xl font-bold text-black">Muses</h1>
       <div className="flex items-center justify-between p-2 bg-gray-200 rounded text-xl">
         <input
@@ -70,7 +72,14 @@ export default function App() {
           htmlFor="resumeInput"
           className="cursor-pointer hover:text-gray-600 hover:underline transition"
         >
-          {resumeFile.name || "Choose resume"}
+          {resumeFile.name ? (
+            <span className="flex items-center gap-2">
+              <IoDocumentTextSharp />
+              {resumeFile.name}
+            </span>
+          ) : (
+            "Choose resume"
+          )}
         </label>
         {!!resumeFile.name && (
           <MdClose
@@ -80,10 +89,10 @@ export default function App() {
         )}
       </div>
       <button
-        className="text-xl bg-blue-500 hover:bg-blue-700 text-white p-2 rounded transition"
+        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-blue-500 hover:bg-blue-700 text-white rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
       >
-        Download Cover Letter
+        <FaDownload /> Download Cover Letter
       </button>
       {isLoading && <span>Loading...</span>}
     </div>
