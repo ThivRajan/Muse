@@ -57,7 +57,7 @@ export default function App() {
   return (
     <div className="w-[300px] p-8 flex flex-col gap-2">
       <h1 className="text-3xl font-bold text-black">Muses</h1>
-      <div>
+      <div className="flex items-center justify-between p-2 bg-gray-200 rounded text-xl">
         <input
           type="file"
           id="resumeInput"
@@ -65,24 +65,20 @@ export default function App() {
           className="hidden"
           onChange={handleResumeChange}
         />
-        <div className="flex items-center gap-2">
-          <label htmlFor="resumeInput" className="flex gap-2 items-center">
-            <span className="bg-red-300 rounded w-fit p-1 text-white text-md cursor-pointer">
-              Choose Resume
-            </span>
-            {resumeFile.name ? (
-              <span>{resumeFile.name}</span>
-            ) : (
-              <span>No resume chosen</span>
-            )}
-          </label>
+        <label
+          htmlFor="resumeInput"
+          className="cursor-pointer hover:text-gray-600 hover:underline"
+        >
+          {resumeFile.name || "Choose resume"}
+        </label>
+        {!!resumeFile.name && (
           <span
-            className="hover:text-red-500 cursor-pointer text-lg"
+            className="hover:text-red-500 cursor-pointer"
             onClick={clearResumeFile}
           >
-            X
+            x
           </span>
-        </div>
+        )}
       </div>
       <button
         className="text-xl bg-blue-500 text-white p-2 rounded hover:brightness-75"
