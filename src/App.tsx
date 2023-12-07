@@ -60,8 +60,8 @@ export default function App() {
 
   return (
     <div className="w-[330px] p-8 flex flex-col gap-2 bg-slate-800">
-      <h1 className="text-3xl font-bold text-slate-400">Muses</h1>
-      <div className="flex items-center justify-between p-2 bg-slate-600 rounded text-xl">
+      <h1 className="text-3xl font-bold text-slate-300">Muses</h1>
+      <div className="flex items-center justify-between p-2 bg-slate-500 rounded text-xl">
         <input
           type="file"
           id="resumeInput"
