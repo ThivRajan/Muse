@@ -90,7 +90,7 @@ export default function App() {
         )}
       </div>
       <button
-        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-emerald-700 hover:bg-emerald-900 text-slate-300 rounded transition"
+        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-teal-700 hover:bg-teal-900 text-slate-300 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
       >
         <FaDownload /> Download Cover Letter
