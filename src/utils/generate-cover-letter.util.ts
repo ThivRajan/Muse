@@ -30,7 +30,8 @@ export async function generateCoverLetter(
     DATE_TOKEN,
     getFormattedDate()
   );
-  return coverLetter;
+  const name = coverLetter.split("\n")[0];
+  return { coverLetter, name };
 }
 
 function getPrompt(jobDescription: string, resume: string) {
