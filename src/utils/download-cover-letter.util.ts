@@ -3,9 +3,9 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
-import { getResumeFromStorage } from "./resume-storage.util";
 
 export async function downloadCoverLetter(
+  resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
   const [tab] = await chrome.tabs.query({
@@ -20,14 +20,13 @@ export async function downloadCoverLetter(
   }) => {
     if (!jobPostingText) return;
 
-    const resume = await getResumeFromStorage();
-    const coverLetter = await generateCoverLetter(
+    const { coverLetter, name } = await generateCoverLetter(
       jobPostingText,
       resume,
       setIsLoading
     );
-    downloadPdf(coverLetter);
-    downloadDocx(coverLetter);
+    downloadPdf(coverLetter, name);
+    downloadDocx(coverLetter, name);
   };
 
   chrome.runtime.onMessage.addListener(handleJobPostingText);
@@ -38,13 +37,13 @@ export async function downloadCoverLetter(
   chrome.runtime.onMessage.removeListener(handleJobPostingText);
 }
 
-async function downloadPdf(coverLetter: string) {
+async function downloadPdf(coverLetter: string, name: string) {
   const pdfFile = await convertTextToPdfBlob(coverLetter);
   const pdfFileUrl = URL.createObjectURL(pdfFile);
-  downloadFile(pdfFileUrl, "pdf");
+  downloadFile(pdfFileUrl, "pdf", name);
 }
 
-async function downloadDocx(coverLetter: string) {
+async function downloadDocx(coverLetter: string, name: string) {
   const doc = new Document({
     sections: [
       {
@@ -61,14 +60,14 @@ async function downloadDocx(coverLetter: string) {
   const docxFile = await Packer.toBlob(doc);
   const docxFileUrl = URL.createObjectURL(docxFile);
 
-  downloadFile(docxFileUrl, "docx");
+  downloadFile(docxFileUrl, "docx", name);
 }
 
-function downloadFile(url: string, extension: "pdf" | "docx") {
+function downloadFile(url: string, extension: "pdf" | "docx", name: string) {
   chrome.downloads.download(
     {
       url,
-      filename: `Muses Cover Letter.${extension}`,
+      filename: `${name} - Cover Letter.${extension}`,
     },
     () => {
       URL.revokeObjectURL(url);

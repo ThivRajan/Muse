@@ -15,7 +15,9 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.0.189",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "react-loader-spinner": "^5.4.5"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.251",
