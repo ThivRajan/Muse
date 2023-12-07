@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaDownload } from "react-icons/fa6";
 import { IoDocumentTextSharp } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
+import { RiCloseFill } from "react-icons/ri";
 import { Oval } from "react-loader-spinner";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parsePdf } from "./utils/parse-pdf.util";
@@ -59,9 +59,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-[330px] p-8 flex flex-col gap-2">
-      <h1 className="text-3xl font-bold text-black">Muses</h1>
-      <div className="flex items-center justify-between p-2 bg-gray-200 rounded text-xl">
+    <div className="w-[330px] p-8 flex flex-col gap-2 bg-slate-800">
+      <h1 className="text-3xl font-bold text-slate-300">Muses</h1>
+      <div className="flex items-center justify-between p-2 text-neutral-900 bg-slate-600 rounded text-xl">
         <input
           type="file"
           id="resumeInput"
@@ -71,7 +71,7 @@ export default function App() {
         />
         <label
           htmlFor="resumeInput"
-          className="cursor-pointer hover:text-gray-600 hover:underline transition"
+          className="cursor-pointer hover:text-slate-300 hover:underline transition"
         >
           {resumeFile.name ? (
             <span className="flex items-center gap-2">
@@ -83,14 +83,14 @@ export default function App() {
           )}
         </label>
         {!!resumeFile.name && (
-          <MdClose
-            className="hover:text-red-500 cursor-pointer text-2xl transition"
+          <RiCloseFill
+            className="text-neutral-800 hover:text-rose-700 cursor-pointer text-3xl transition"
             onClick={clearResumeFile}
           />
         )}
       </div>
       <button
-        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-blue-500 hover:bg-blue-700 text-white rounded transition"
+        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-emerald-700 hover:bg-emerald-900 text-slate-300 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
       >
         <FaDownload /> Download Cover Letter
