@@ -1,5 +1,5 @@
 import { Document, Packer, Paragraph, TextRun } from "docx";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { jsPDF } from "jspdf";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
@@ -76,21 +76,18 @@ function downloadFile(url: string, extension: "pdf" | "docx", name: string) {
 }
 
 async function convertTextToPdfBlob(text: string) {
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const page = pdfDoc.addPage();
-  const { width, height } = page.getSize();
-  const margin = 50;
+  const margin = { x: 0.5, y: 0.5 };
   const fontSize = 12;
-  page.drawText(text, {
-    x: margin,
-    y: height - 4 * fontSize,
-    size: fontSize,
-    font,
-    color: rgb(0, 0, 0),
-    maxWidth: width - margin * 2,
-  });
+  const font = "Helvetica";
+  const textColor = "#000000";
 
-  const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: "application/pdf" });
+  const doc = new jsPDF("p", "in", "a4");
+  doc.setFontSize(fontSize);
+  doc.setFont(font);
+  doc.setDrawColor(textColor);
+
+  const wrappedText = doc.splitTextToSize(text, 170);
+  doc.text(wrappedText, margin.x, margin.y);
+
+  return doc.output("blob");
 }
