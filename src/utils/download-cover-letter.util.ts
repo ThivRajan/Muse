@@ -4,6 +4,10 @@ import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
 
+const FONT = "Helvetica";
+const FONT_SIZE = 12;
+const MARGINS = { x: 0.75, y: 1 }; // Measured in inches
+
 export async function downloadCoverLetter(
   resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
@@ -47,10 +51,26 @@ async function downloadDocx(coverLetter: string, name: string) {
   const doc = new Document({
     sections: [
       {
+        properties: {
+          page: {
+            margin: {
+              top: `${MARGINS.y}in`,
+              right: `${MARGINS.x}in`,
+              bottom: `${MARGINS.y}in`,
+              left: `${MARGINS.x}in`,
+            },
+          },
+        },
         children: coverLetter.split("\n").map(
           (paragraph) =>
             new Paragraph({
-              children: [new TextRun({ text: paragraph, font: "Helvetica" })],
+              children: [
+                new TextRun({
+                  text: paragraph,
+                  size: FONT_SIZE * 2, // Font-size is measured in half-points
+                  font: FONT,
+                }),
+              ],
             })
         ),
       },
@@ -76,18 +96,17 @@ function downloadFile(url: string, extension: "pdf" | "docx", name: string) {
 }
 
 async function convertTextToPdfBlob(text: string) {
-  const margin = { x: 0.5, y: 0.5 };
-  const fontSize = 12;
-  const font = "Helvetica";
+  const pageWidth = 8.25;
   const textColor = "#000000";
 
   const doc = new jsPDF("p", "in", "a4");
-  doc.setFontSize(fontSize);
-  doc.setFont(font);
+
+  doc.setFontSize(FONT_SIZE);
+  doc.setFont(FONT);
   doc.setDrawColor(textColor);
 
-  const wrappedText = doc.splitTextToSize(text, 170);
-  doc.text(wrappedText, margin.x, margin.y);
+  const wrappedText = doc.splitTextToSize(text, pageWidth - MARGINS.x * 2);
+  doc.text(wrappedText, MARGINS.x, MARGINS.y);
 
   return doc.output("blob");
 }
