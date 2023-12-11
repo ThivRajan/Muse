@@ -43,54 +43,23 @@ export async function downloadCoverLetter(
 
 async function downloadPdf(coverLetter: string, name: string) {
   const pdfFile = await convertTextToPdfBlob(coverLetter);
-  const pdfFileUrl = URL.createObjectURL(pdfFile);
-  downloadFile(pdfFileUrl, "pdf", name);
+  downloadFile(pdfFile, "pdf", name);
 }
 
 async function downloadDocx(coverLetter: string, name: string) {
-  const doc = new Document({
-    sections: [
-      {
-        properties: {
-          page: {
-            margin: {
-              top: `${MARGINS.y}in`,
-              right: `${MARGINS.x}in`,
-              bottom: `${MARGINS.y}in`,
-              left: `${MARGINS.x}in`,
-            },
-          },
-        },
-        children: coverLetter.split("\n").map(
-          (paragraph) =>
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: paragraph,
-                  size: FONT_SIZE * 2, // Font-size is measured in half-points
-                  font: FONT,
-                }),
-              ],
-            })
-        ),
-      },
-    ],
-  });
-
-  const docxFile = await Packer.toBlob(doc);
-  const docxFileUrl = URL.createObjectURL(docxFile);
-
-  downloadFile(docxFileUrl, "docx", name);
+  const docxFile = await convertTextToDocxBlob(coverLetter);
+  downloadFile(docxFile, "docx", name);
 }
 
-function downloadFile(url: string, extension: "pdf" | "docx", name: string) {
+function downloadFile(fileBlob: Blob, extension: "pdf" | "docx", name: string) {
+  const fileUrl = URL.createObjectURL(fileBlob);
   chrome.downloads.download(
     {
-      url,
+      url: fileUrl,
       filename: `${name} - Cover Letter.${extension}`,
     },
     () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(fileUrl);
     }
   );
 }
@@ -119,4 +88,37 @@ async function convertTextToPdfBlob(text: string) {
     .text(wrappedBody, MARGINS.x, MARGINS.y);
 
   return doc.output("blob");
+}
+
+async function convertTextToDocxBlob(text: string) {
+  const doc = new Document({
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: {
+              top: `${MARGINS.y}in`,
+              right: `${MARGINS.x}in`,
+              bottom: `${MARGINS.y}in`,
+              left: `${MARGINS.x}in`,
+            },
+          },
+        },
+        children: text.split("\n").map(
+          (paragraph) =>
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: paragraph,
+                  size: FONT_SIZE * 2, // Font-size is measured in half-points
+                  font: FONT,
+                }),
+              ],
+            })
+        ),
+      },
+    ],
+  });
+
+  return await Packer.toBlob(doc);
 }
