@@ -100,13 +100,23 @@ async function convertTextToPdfBlob(text: string) {
   const textColor = "#000000";
 
   const doc = new jsPDF("p", "in", "a4");
-
-  doc.setFontSize(FONT_SIZE);
-  doc.setFont(FONT);
+  const [name, ...body] = text.split("\n");
   doc.setDrawColor(textColor);
+  doc.setFontSize(FONT_SIZE);
 
-  const wrappedText = doc.splitTextToSize(text, pageWidth - MARGINS.x * 2);
-  doc.text(wrappedText, MARGINS.x, MARGINS.y);
+  const wrappedBody = doc.splitTextToSize(
+    `\n\n${body.join("\n")}`,
+    pageWidth - MARGINS.x * 2
+  );
+
+  doc
+    .setFont(FONT, "bold")
+    .setFontSize(FONT_SIZE * 2)
+    .text(name, pageWidth / 2, MARGINS.y, { align: "center" });
+  doc
+    .setFont(FONT, "normal")
+    .setFontSize(FONT_SIZE)
+    .text(wrappedBody, MARGINS.x, MARGINS.y);
 
   return doc.output("blob");
 }
