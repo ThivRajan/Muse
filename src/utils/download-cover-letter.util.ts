@@ -1,4 +1,11 @@
-import { Document, Packer, Paragraph, TextRun } from "docx";
+import {
+  AlignmentType,
+  Document,
+  HeadingLevel,
+  Packer,
+  Paragraph,
+  TextRun,
+} from "docx";
 import { jsPDF } from "jspdf";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
@@ -91,7 +98,25 @@ async function convertTextToPdfBlob(text: string) {
 }
 
 async function convertTextToDocxBlob(text: string) {
+  const [name, ...body] = text.split("\n");
+
   const doc = new Document({
+    styles: {
+      paragraphStyles: [
+        {
+          id: "Heading1",
+          name: "Heading 1",
+          basedOn: "Normal",
+          next: "Normal",
+          quickFormat: true,
+          run: {
+            bold: true,
+            size: FONT_SIZE * 4,
+            font: FONT,
+          },
+        },
+      ],
+    },
     sections: [
       {
         properties: {
@@ -104,17 +129,25 @@ async function convertTextToDocxBlob(text: string) {
             },
           },
         },
-        children: text.split("\n").map(
-          (paragraph) =>
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: paragraph,
-                  size: FONT_SIZE * 2, // Font-size is measured in half-points
-                  font: FONT,
-                }),
-              ],
-            })
+        children: [
+          new Paragraph({
+            text: name,
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+          }),
+        ].concat(
+          ["\n", ...body].map(
+            (paragraph) =>
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: paragraph,
+                    size: FONT_SIZE * 2, // Font-size is measured in half-points
+                    font: FONT,
+                  }),
+                ],
+              })
+          )
         ),
       },
     ],
