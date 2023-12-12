@@ -64,7 +64,6 @@ function getFormattedDate() {
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(new Date()) +
-    "\n"
+    }).format(new Date())
   );
 }
