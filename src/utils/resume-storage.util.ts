@@ -1,3 +1,4 @@
+import { parseDocx } from "./parse-docx.util";
 import { parsePdf } from "./parse-pdf.util";
 
 const RESUME_CHUNK_SIZE = 1024 * 100;
@@ -23,7 +24,7 @@ export async function saveResumeToStorage(
   });
 }
 
-export async function getResumeFromStorage() {
+export async function getResumeFromStorage(fileExtension: string) {
   const items = await getAllItemsFromStorage();
 
   const resumeChunkKeys = Object.keys(items)
@@ -54,7 +55,7 @@ export async function getResumeFromStorage() {
     offset += RESUME_CHUNK_SIZE;
   }
 
-  return parsePdf(resumeFile);
+  return fileExtension === "pdf" ? parsePdf(resumeFile) : parseDocx(resumeFile);
 }
 
 // Convert chunk into storage-friendly format before storing

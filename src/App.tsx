@@ -4,6 +4,7 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiCloseFill } from "react-icons/ri";
 import { Oval } from "react-loader-spinner";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
+import { parseDocx } from "./utils/parse-docx.util";
 import { parsePdf } from "./utils/parse-pdf.util";
 import {
   getResumeFromStorage,
@@ -31,11 +32,13 @@ export default function App() {
   };
 
   const getResumeFileName = async () => {
-    const name = await chrome.storage.local.get("resumeFileName");
-    const contents = await getResumeFromStorage();
-    if (name && contents) {
+    const storedName = await chrome.storage.local.get("resumeFileName");
+    if (storedName) {
+      const resumeFileName = storedName.resumeFileName;
+      const fileExtension = resumeFileName.split(".")[1];
+      const contents = await getResumeFromStorage(fileExtension);
       setResumeFile({
-        name: name.resumeFileName,
+        name: resumeFileName,
         contents,
       });
     }
@@ -44,11 +47,17 @@ export default function App() {
   const handleResumeChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const resumeFile = event.target.files?.[0];
     const resumeFileName = resumeFile?.name || "";
+    const fileExtension = resumeFileName.split(".")[1];
     const resumeFileContents = await resumeFile?.arrayBuffer();
 
-    if (resumeFileContents) {
+    if (
+      resumeFileContents &&
+      (fileExtension === "pdf" || fileExtension === "docx")
+    ) {
       await saveResumeToStorage(resumeFileContents, resumeFileName);
-      const parsedContents = await parsePdf(resumeFileContents);
+      const parsedContents = await (fileExtension === "pdf"
+        ? parsePdf(resumeFileContents)
+        : parseDocx(resumeFileContents));
       setResumeFile({
         name: resumeFileName,
         contents: parsedContents,
