@@ -1,11 +1,4 @@
-import {
-  AlignmentType,
-  Document,
-  HeadingLevel,
-  Packer,
-  Paragraph,
-  TextRun,
-} from "docx";
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import { jsPDF } from "jspdf";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
@@ -88,7 +81,7 @@ async function convertTextToPdfBlob(text: string) {
   doc
     .setFont(FONT, "bold")
     .setFontSize(FONT_SIZE * 2)
-    .text(name, pageWidth / 2, MARGINS.y, { align: "center" });
+    .text(name, MARGINS.x, MARGINS.y);
   doc
     .setFont(FONT, "normal")
     .setFontSize(FONT_SIZE)
@@ -104,7 +97,7 @@ async function convertTextToDocxBlob(text: string) {
     styles: {
       paragraphStyles: [
         {
-          id: "Heading1",
+          id: HeadingLevel.HEADING_1,
           name: "Heading 1",
           basedOn: "Normal",
           next: "Normal",
@@ -133,7 +126,6 @@ async function convertTextToDocxBlob(text: string) {
           new Paragraph({
             text: name,
             heading: HeadingLevel.HEADING_1,
-            alignment: AlignmentType.CENTER,
           }),
         ].concat(
           ["\n", ...body].map(

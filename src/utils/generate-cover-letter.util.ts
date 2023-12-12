@@ -27,10 +27,11 @@ export async function generateCoverLetter(
 
   const responseJSON = await response.json();
   const coverLetter: string = responseJSON.choices[0].message.content;
-
   const name = coverLetter.split("\n")[0];
-  const formattedCoverLetter = getFormattedCoverLetter(coverLetter, name);
-  return { coverLetter: formattedCoverLetter, name };
+  return {
+    coverLetter: coverLetter.replace(DATE_TOKEN, getFormattedDate()),
+    name,
+  };
 }
 
 function getPrompt(jobDescription: string, resume: string) {
@@ -54,15 +55,6 @@ function getPrompt(jobDescription: string, resume: string) {
     `\n\nHere is the resume: \n\n${resume}` +
     `\n\n${contentPrompt} ${formattingPrompt}`
   );
-}
-
-function getFormattedCoverLetter(coverLetter: string, name: string) {
-  const sections = coverLetter.split("\n");
-  const separatedName = `${name}\n`;
-
-  return [separatedName, ...sections.slice(1)]
-    .join("\n")
-    .replace(DATE_TOKEN, getFormattedDate());
 }
 
 function getFormattedDate() {
