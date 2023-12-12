@@ -47,7 +47,7 @@ function getPrompt(jobDescription: string, resume: string) {
 
   const formattingPrompt =
     `Include ONLY the following details at the top of the cover letter in this EXACT order, each on a separate line:` +
-    `${headerItems}, and ${DATE_TOKEN}.`;
+    `${headerItems}, and ${DATE_TOKEN}. Do NOT include any of the company's information before the letter.`;
 
   return (
     `I am going to send you my resume along with a job description. ` +
