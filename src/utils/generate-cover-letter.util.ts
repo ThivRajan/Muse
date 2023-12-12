@@ -26,12 +26,12 @@ export async function generateCoverLetter(
   setIsLoading(false);
 
   const responseJSON = await response.json();
-  const coverLetter: string = responseJSON.choices[0].message.content.replace(
-    DATE_TOKEN,
-    getFormattedDate()
-  );
+  const coverLetter: string = responseJSON.choices[0].message.content;
   const name = coverLetter.split("\n")[0];
-  return { coverLetter, name };
+  return {
+    coverLetter: coverLetter.replace(DATE_TOKEN, getFormattedDate()),
+    name,
+  };
 }
 
 function getPrompt(jobDescription: string, resume: string) {
@@ -47,7 +47,7 @@ function getPrompt(jobDescription: string, resume: string) {
 
   const formattingPrompt =
     `Include ONLY the following details at the top of the cover letter in this EXACT order, each on a separate line:` +
-    `${headerItems}, and ${DATE_TOKEN}.`;
+    `${headerItems}, and ${DATE_TOKEN}. Do NOT include any of the company's information before the letter.`;
 
   return (
     `I am going to send you my resume along with a job description. ` +
@@ -58,9 +58,12 @@ function getPrompt(jobDescription: string, resume: string) {
 }
 
 function getFormattedDate() {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date());
+  return (
+    "\n" +
+    new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date())
+  );
 }

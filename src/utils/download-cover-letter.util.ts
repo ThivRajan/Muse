@@ -1,8 +1,12 @@
-import { Document, Packer, Paragraph, TextRun } from "docx";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
+import { jsPDF } from "jspdf";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
+
+const FONT = "Helvetica";
+const FONT_SIZE = 12;
+const MARGINS = { x: 0.75, y: 1 }; // Measured in inches
 
 export async function downloadCoverLetter(
   resume: string,
@@ -39,58 +43,107 @@ export async function downloadCoverLetter(
 
 async function downloadPdf(coverLetter: string, name: string) {
   const pdfFile = await convertTextToPdfBlob(coverLetter);
-  const pdfFileUrl = URL.createObjectURL(pdfFile);
-  downloadFile(pdfFileUrl, "pdf", name);
+  downloadFile(pdfFile, "pdf", name);
 }
 
 async function downloadDocx(coverLetter: string, name: string) {
-  const doc = new Document({
-    sections: [
-      {
-        children: coverLetter.split("\n").map(
-          (paragraph) =>
-            new Paragraph({
-              children: [new TextRun({ text: paragraph, font: "Helvetica" })],
-            })
-        ),
-      },
-    ],
-  });
-
-  const docxFile = await Packer.toBlob(doc);
-  const docxFileUrl = URL.createObjectURL(docxFile);
-
-  downloadFile(docxFileUrl, "docx", name);
+  const docxFile = await convertTextToDocxBlob(coverLetter);
+  downloadFile(docxFile, "docx", name);
 }
 
-function downloadFile(url: string, extension: "pdf" | "docx", name: string) {
+function downloadFile(fileBlob: Blob, extension: "pdf" | "docx", name: string) {
+  const fileUrl = URL.createObjectURL(fileBlob);
   chrome.downloads.download(
     {
-      url,
+      url: fileUrl,
       filename: `${name} - Cover Letter.${extension}`,
     },
     () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(fileUrl);
     }
   );
 }
 
 async function convertTextToPdfBlob(text: string) {
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const page = pdfDoc.addPage();
-  const { width, height } = page.getSize();
-  const margin = 50;
-  const fontSize = 12;
-  page.drawText(text, {
-    x: margin,
-    y: height - 4 * fontSize,
-    size: fontSize,
-    font,
-    color: rgb(0, 0, 0),
-    maxWidth: width - margin * 2,
+  const pageWidth = 8.25;
+  const textColor = "#000000";
+
+  const doc = new jsPDF("p", "in", "a4");
+  const [name, ...body] = text.split("\n");
+  doc.setDrawColor(textColor);
+  doc.setFontSize(FONT_SIZE);
+
+  const wrappedBody = doc.splitTextToSize(
+    `\n\n${body.join("\n")}`,
+    pageWidth - MARGINS.x * 2
+  );
+
+  doc
+    .setFont(FONT, "bold")
+    .setFontSize(FONT_SIZE * 2)
+    .text(name, MARGINS.x, MARGINS.y);
+  doc
+    .setFont(FONT, "normal")
+    .setFontSize(FONT_SIZE)
+    .text(wrappedBody, MARGINS.x, MARGINS.y);
+
+  return doc.output("blob");
+}
+
+async function convertTextToDocxBlob(text: string) {
+  const [name, ...body] = text.split("\n");
+
+  const doc = new Document({
+    styles: {
+      paragraphStyles: [
+        {
+          id: HeadingLevel.HEADING_1,
+          name: "Heading 1",
+          basedOn: "Normal",
+          next: "Normal",
+          quickFormat: true,
+          run: {
+            bold: true,
+            size: FONT_SIZE * 4,
+            font: FONT,
+          },
+        },
+      ],
+    },
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: {
+              top: `${MARGINS.y}in`,
+              right: `${MARGINS.x}in`,
+              bottom: `${MARGINS.y}in`,
+              left: `${MARGINS.x}in`,
+            },
+          },
+        },
+        children: [
+          new Paragraph({
+            text: name,
+            heading: HeadingLevel.HEADING_1,
+          }),
+        ].concat(
+          ["\n", ...body].map(
+            (paragraph) =>
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: paragraph,
+                    size: FONT_SIZE * 2, // Font-size is measured in half-points
+                    font: FONT,
+                  }),
+                ],
+              })
+          )
+        ),
+      },
+    ],
   });
 
-  const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: "application/pdf" });
+  return await Packer.toBlob(doc);
 }
