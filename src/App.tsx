@@ -4,8 +4,7 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiCloseFill } from "react-icons/ri";
 import { Oval } from "react-loader-spinner";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
-import { parseDocx } from "./utils/parse-docx.util";
-import { parsePdf } from "./utils/parse-pdf.util";
+import { parseResume } from "./utils/parse-resume.util";
 import {
   getResumeFromStorage,
   saveResumeToStorage,
@@ -35,7 +34,7 @@ export default function App() {
     const storedName = await chrome.storage.local.get("resumeFileName");
     if (storedName) {
       const resumeFileName = storedName.resumeFileName;
-      const fileExtension = resumeFileName.split(".")[1];
+      const fileExtension: "pdf" | "docx" = resumeFileName.split(".")[1];
       const contents = await getResumeFromStorage(fileExtension);
       setResumeFile({
         name: resumeFileName,
@@ -55,9 +54,10 @@ export default function App() {
       (fileExtension === "pdf" || fileExtension === "docx")
     ) {
       await saveResumeToStorage(resumeFileContents, resumeFileName);
-      const parsedContents = await (fileExtension === "pdf"
-        ? parsePdf(resumeFileContents)
-        : parseDocx(resumeFileContents));
+      const parsedContents = await parseResume(
+        resumeFileContents,
+        fileExtension
+      );
       setResumeFile({
         name: resumeFileName,
         contents: parsedContents,
