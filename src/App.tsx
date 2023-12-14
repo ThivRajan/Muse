@@ -21,7 +21,7 @@ export default function App() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getResumeFileName();
+    getResumeFile();
   }, []);
 
   const clearResumeFile = () => {
@@ -30,16 +30,10 @@ export default function App() {
     setResumeFile(INITIAL_RESUME_FILE);
   };
 
-  const getResumeFileName = async () => {
-    const storedName = await chrome.storage.local.get("resumeFileName");
-    if (storedName) {
-      const resumeFileName = storedName.resumeFileName;
-      const fileExtension: "pdf" | "docx" = resumeFileName.split(".")[1];
-      const contents = await getResumeFromStorage(fileExtension);
-      setResumeFile({
-        name: resumeFileName,
-        contents,
-      });
+  const getResumeFile = async () => {
+    const resumeFile = await getResumeFromStorage();
+    if (resumeFile) {
+      setResumeFile(resumeFile);
     }
   };
 
