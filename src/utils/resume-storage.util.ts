@@ -1,4 +1,4 @@
-import { parsePdf } from "./parse-pdf.util";
+import { parseResume } from "./parse-resume.util";
 
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
@@ -24,6 +24,12 @@ export async function saveResumeToStorage(
 }
 
 export async function getResumeFromStorage() {
+  const storedName = await chrome.storage.local.get("resumeFileName");
+  if (!storedName) return;
+
+  const fileName = storedName.resumeFileName;
+  const fileExtension: "pdf" | "docx" = fileName.split(".")[1];
+
   const items = await getAllItemsFromStorage();
 
   const resumeChunkKeys = Object.keys(items)
@@ -54,7 +60,11 @@ export async function getResumeFromStorage() {
     offset += RESUME_CHUNK_SIZE;
   }
 
-  return parsePdf(resumeFile);
+  const fileContents = await parseResume(resumeFile, fileExtension);
+  return {
+    name: fileName,
+    contents: fileContents,
+  };
 }
 
 // Convert chunk into storage-friendly format before storing
