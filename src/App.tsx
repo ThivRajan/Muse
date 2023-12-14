@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaDownload } from "react-icons/fa6";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiCloseFill } from "react-icons/ri";
-import { Oval } from "react-loader-spinner";
+import Loader from "./Loader";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parseResume } from "./utils/parse-resume.util";
 import {
@@ -98,18 +98,7 @@ export default function App() {
       >
         <FaDownload /> Download Cover Letter
       </button>
-      <Oval
-        height={80}
-        width={80}
-        color="#20252e"
-        secondaryColor="#495469"
-        wrapperStyle={{}}
-        wrapperClass="w-full h-full absolute flex justify-center items-center top-0 left-0 bg-white/40"
-        visible={isLoading}
-        ariaLabel="oval-loading"
-        strokeWidth={4}
-        strokeWidthSecondary={4}
-      />
+      <Loader isLoading={isLoading} />
     </div>
   );
 }
