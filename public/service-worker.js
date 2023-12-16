@@ -16,8 +16,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       "www.glassdoor.ca",
       "www.careerbuilder.ca",
     ];
-    await chrome.runtime.sendMessage({
-      jobBoardFound: JOB_BOARDS.includes(hostname),
+    chrome.action.setIcon({
+      tabId,
+      path: JOB_BOARDS.includes(hostname)
+        ? "logo-active-38.png"
+        : "logo-inactive-38.png",
     });
   });
 });
