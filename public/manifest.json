@@ -4,7 +4,12 @@
   "description": "AI Cover Letter Generator",
   "version": "0.0.0",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "logo-inactive.png",
+      "48": "logo-inactive.png",
+      "128": "logo-inactive.png"
+    }
   },
   "permissions": [
     "storage",
