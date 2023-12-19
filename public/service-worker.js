@@ -1,3 +1,13 @@
+const JOB_BOARDS = [
+  "ca.indeed.com",
+  "smartapply.indeed.com",
+  "m5.apply.indeed.com",
+  "www.linkedin.com",
+  "www.monster.ca",
+  "www.glassdoor.ca",
+  "www.careerbuilder.ca",
+];
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     if (tabs[0]?.id === tabId && changeInfo.status === "complete") {
@@ -27,14 +37,5 @@ async function isJobBoardFound(tab) {
     .replace("http://", "")
     .replace("https://", "")
     .split("/")[0];
-  const JOB_BOARDS = [
-    "ca.indeed.com",
-    "smartapply.indeed.com",
-    "m5.apply.indeed.com",
-    "www.linkedin.com",
-    "www.monster.ca",
-    "www.glassdoor.ca",
-    "www.careerbuilder.ca",
-  ];
   return JOB_BOARDS.includes(hostname);
 }
