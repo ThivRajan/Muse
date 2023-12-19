@@ -25,19 +25,19 @@ chrome.tabs.onActivated.addListener(() => {
 });
 
 chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener(async (msg) => {
-    if (msg.checkJobBoard) {
-      const tabs = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
+  port.onMessage.addListener(async ({ checkJobBoard }) => {
+    if (!checkJobBoard) {
+      return;
+    }
+
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       if (tabs[0]) {
         const jobBoardFound = await isJobBoardFound(tabs[0]);
         port.postMessage({ jobBoardFound });
       } else {
         port.postMessage({ jobBoardFound: false });
       }
-    }
+    });
   });
 });
 
