@@ -142,7 +142,10 @@ export default function App() {
         <FaDownload /> Download Cover Letter
       </button>
       <Loader isLoading={isLoading} />
-      <Tooltip id={tooltipId} style={{ fontSize: "1rem" }} />
+      <Tooltip
+        id={tooltipId}
+        style={{ fontSize: "1rem", width: "30ch", textAlign: "center" }}
+      />
     </div>
   );
 }
