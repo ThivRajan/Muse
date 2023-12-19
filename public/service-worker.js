@@ -1,21 +1,28 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     if (tabs[0]?.id === tabId && changeInfo.status === "complete") {
-      updateIcon(tab);
+      await updateIcon(tab);
     }
   });
 });
 
-chrome.tabs.onActivated.addListener(({ tabId }) => {
+chrome.tabs.onActivated.addListener(() => {
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-    const tab = tabs[0];
-    if (tab) {
-      updateIcon(tab);
+    if (tabs[0]) {
+      await updateIcon(tabs[0]);
     }
   });
 });
 
-function updateIcon(tab) {
+async function updateIcon(tab) {
+  const jobBoardFound = await isJobBoardFound(tab);
+  await chrome.action.setIcon({
+    tabId: tab.id,
+    path: jobBoardFound ? "logo-active-38.png" : "logo-inactive-38.png",
+  });
+}
+
+async function isJobBoardFound(tab) {
   const hostname = (tab.url || "")
     .replace("http://", "")
     .replace("https://", "")
@@ -29,10 +36,5 @@ function updateIcon(tab) {
     "www.glassdoor.ca",
     "www.careerbuilder.ca",
   ];
-  chrome.action.setIcon({
-    tabId: tab.id,
-    path: JOB_BOARDS.includes(hostname)
-      ? "logo-active-38.png"
-      : "logo-inactive-38.png",
-  });
+  return JOB_BOARDS.includes(hostname);
 }
