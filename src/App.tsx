@@ -1,7 +1,8 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FaDownload } from "react-icons/fa6";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiCloseFill } from "react-icons/ri";
+import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parseResume } from "./utils/parse-resume.util";
@@ -29,7 +30,22 @@ export default function App() {
     getResumeFile();
   }, []);
 
-  const downloadDisabled = !isActive || !resumeFile.contents;
+  const downloadDisabled = useMemo(
+    () => !isActive || !resumeFile.contents,
+    [isActive, resumeFile.contents]
+  );
+  const tooltipId = "download-disabled-tooltip";
+  const tooltipContent = useMemo(() => {
+    if (!resumeFile.contents) {
+      return "You must upload a resume to generate a cover letter.";
+    }
+
+    if (!isActive) {
+      return "This site does not have a job posting.";
+    }
+
+    return "";
+  }, [isActive, resumeFile.contents]);
 
   const setupTabListener = async () => {
     const port = chrome.runtime.connect({ name: "jobBoardCheck" });
@@ -41,7 +57,7 @@ export default function App() {
   const handleValidTab = async ({
     jobBoardFound,
   }: {
-    jobBoardFound: boolean | undefined;
+    jobBoardFound?: boolean;
   }) => {
     if (jobBoardFound != null) {
       setIsActive(jobBoardFound);
@@ -120,10 +136,13 @@ export default function App() {
         className="flex gap-2 py-2 px-4 justify-center items-center text-xl disabled:bg-gray-500 bg-teal-700 hover:bg-teal-900 text-slate-300 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
         disabled={downloadDisabled}
+        data-tooltip-id={downloadDisabled ? tooltipId : ""}
+        data-tooltip-content={tooltipContent}
       >
         <FaDownload /> Download Cover Letter
       </button>
       <Loader isLoading={isLoading} />
+      <Tooltip id={tooltipId} style={{ fontSize: "1rem" }} />
     </div>
   );
 }
