@@ -18,11 +18,35 @@ const INITIAL_RESUME_FILE = {
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(INITIAL_RESUME_FILE);
+  const [isActive, setIsActive] = useState(false);
   const resumeInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setupTabListener();
+  }, []);
 
   useEffect(() => {
     getResumeFile();
   }, []);
+
+  const downloadDisabled = !isActive || !resumeFile.contents;
+
+  const setupTabListener = async () => {
+    const port = chrome.runtime.connect({ name: "jobBoardCheck" });
+    port.postMessage({ checkJobBoard: true });
+    port.onMessage.addListener(handleValidTab);
+    return () => chrome.runtime.onMessage.removeListener(handleValidTab);
+  };
+
+  const handleValidTab = async ({
+    jobBoardFound,
+  }: {
+    jobBoardFound: boolean | undefined;
+  }) => {
+    if (jobBoardFound != null) {
+      setIsActive(jobBoardFound);
+    }
+  };
 
   const clearResumeFile = () => {
     // TODO: Find a way to clear only local storage related to app
@@ -93,8 +117,9 @@ export default function App() {
         )}
       </div>
       <button
-        className="flex gap-2 py-2 px-4 justify-center items-center text-xl bg-teal-700 hover:bg-teal-900 text-slate-300 rounded transition"
+        className="flex gap-2 py-2 px-4 justify-center items-center text-xl disabled:bg-gray-500 bg-teal-700 hover:bg-teal-900 text-slate-300 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
+        disabled={downloadDisabled}
       >
         <FaDownload /> Download Cover Letter
       </button>

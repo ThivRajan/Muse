@@ -24,6 +24,23 @@ chrome.tabs.onActivated.addListener(() => {
   });
 });
 
+chrome.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener(async (msg) => {
+    if (msg.checkJobBoard) {
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (tabs[0]) {
+        const jobBoardFound = await isJobBoardFound(tabs[0]);
+        port.postMessage({ jobBoardFound });
+      } else {
+        port.postMessage({ jobBoardFound: false });
+      }
+    }
+  });
+});
+
 async function updateIcon(tab) {
   const jobBoardFound = await isJobBoardFound(tab);
   await chrome.action.setIcon({
