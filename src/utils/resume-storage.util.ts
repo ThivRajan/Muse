@@ -8,8 +8,7 @@ export async function clearResume() {
   const resumeChunkKeys = Object.keys(items).filter((key) =>
     key.startsWith(RESUME_KEY_PREFIX)
   );
-  const keysToRemove = ["resumeFileName", ...resumeChunkKeys];
-  await chrome.storage.local.remove(keysToRemove);
+  await chrome.storage.local.remove(["resumeFileName", ...resumeChunkKeys]);
 }
 
 export async function saveResumeToStorage(
