@@ -3,12 +3,19 @@ import { parseResume } from "./parse-resume.util";
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
 
+export async function clearResume() {
+  const items = await getAllItemsFromStorage();
+  const resumeChunkKeys = Object.keys(items).filter((key) =>
+    key.startsWith(RESUME_KEY_PREFIX)
+  );
+  await chrome.storage.local.remove(["resumeFileName", ...resumeChunkKeys]);
+}
+
 export async function saveResumeToStorage(
   resumeFileContent: ArrayBuffer,
   resumeFileName: string
 ) {
-  // TODO: Find a way to clear only local storage related to app
-  chrome.storage.local.clear();
+  await clearResume();
   chrome.storage.local.set({ resumeFileName });
 
   // Split the array buffer into storable chunks

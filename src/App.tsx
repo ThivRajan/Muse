@@ -7,6 +7,7 @@ import Loader from "./Loader";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parseResume } from "./utils/parse-resume.util";
 import {
+  clearResume,
   getResumeFromStorage,
   saveResumeToStorage,
 } from "./utils/resume-storage.util";
@@ -64,9 +65,8 @@ export default function App() {
     }
   };
 
-  const clearResumeFile = () => {
-    // TODO: Find a way to clear only local storage related to app
-    chrome.storage.local.clear();
+  const clearResumeFile = async () => {
+    await clearResume();
     setResumeFile(INITIAL_RESUME_FILE);
   };
 
