@@ -65,8 +65,8 @@ export default function App() {
     }
   };
 
-  const clearResumeFile = () => {
-    clearResume();
+  const clearResumeFile = async () => {
+    await clearResume();
     setResumeFile(INITIAL_RESUME_FILE);
   };
 
