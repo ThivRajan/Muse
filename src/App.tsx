@@ -4,6 +4,7 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiCloseFill } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
+import { clearResume } from "./utils/clear-resume.util";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parseResume } from "./utils/parse-resume.util";
 import {
@@ -65,8 +66,7 @@ export default function App() {
   };
 
   const clearResumeFile = () => {
-    // TODO: Find a way to clear only local storage related to app
-    chrome.storage.local.clear();
+    clearResume();
     setResumeFile(INITIAL_RESUME_FILE);
   };
 
