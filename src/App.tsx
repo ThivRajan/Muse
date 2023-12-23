@@ -113,7 +113,7 @@ export default function App() {
         />
         <label
           htmlFor="resumeInput"
-          className="cursor-pointer hover:text-slate-300 hover:underline transition flex gap-2 py-1 px-3 items-center"
+          className="flex gap-2 py-1 px-3 items-center cursor-pointer transition hover:text-slate-300 hover:underline"
         >
           {resumeFile.name ? (
             <>
