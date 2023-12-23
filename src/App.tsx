@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { FaDownload } from "react-icons/fa6";
-import { IoDocumentTextSharp } from "react-icons/io5";
+import { FaDownload, FaFileArrowUp, FaFileLines } from "react-icons/fa6";
 import { RiCloseFill } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
@@ -116,14 +115,19 @@ export default function App() {
           htmlFor="resumeInput"
           className="cursor-pointer hover:text-slate-300 hover:underline transition"
         >
-          {resumeFile.name ? (
-            <span className="flex items-center gap-2">
-              <IoDocumentTextSharp />
-              {resumeFile.name}
-            </span>
-          ) : (
-            "Upload Resume"
-          )}
+          <span className="flex gap-2 py-1 px-3 items-center">
+            {resumeFile.name ? (
+              <>
+                <FaFileLines />
+                {resumeFile.name}
+              </>
+            ) : (
+              <>
+                <FaFileArrowUp />
+                Upload Resume
+              </>
+            )}
+          </span>
         </label>
         {!!resumeFile.name && (
           <RiCloseFill
