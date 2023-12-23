@@ -1,8 +1,12 @@
-import { clearResume } from "./clear-resume.util";
 import { parseResume } from "./parse-resume.util";
 
 const RESUME_CHUNK_SIZE = 1024 * 100;
 const RESUME_KEY_PREFIX = "resumeData_";
+
+export async function clearResume() {
+  // TODO: Find a way to clear only local storage related to app
+  await chrome.storage.local.clear();
+}
 
 export async function saveResumeToStorage(
   resumeFileContent: ArrayBuffer,
