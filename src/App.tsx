@@ -122,7 +122,7 @@ export default function App() {
               {resumeFile.name}
             </span>
           ) : (
-            "Choose resume"
+            "Upload Resume"
           )}
         </label>
         {!!resumeFile.name && (
