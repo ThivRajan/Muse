@@ -103,7 +103,7 @@ export default function App() {
   return (
     <div className="w-[330px] p-8 flex flex-col gap-2 bg-slate-300">
       <h1 className="text-3xl font-bold text-black">Muses</h1>
-      <div className="flex items-center justify-between p-2 bg-blue-100 shadow-md rounded text-xl ">
+      <div className="flex items-center justify-between p-2 bg-blue-200 shadow-md rounded text-xl ">
         <input
           type="file"
           id="resumeInput"
@@ -129,7 +129,7 @@ export default function App() {
         </label>
         {!!resumeFile.name && (
           <RiCloseFill
-            className="hover:text-red-600 cursor-pointer text-3xl transition"
+            className="hover:text-red-500 cursor-pointer text-3xl transition"
             onClick={clearResumeFile}
           />
         )}
