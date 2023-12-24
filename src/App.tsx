@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { FaDownload } from "react-icons/fa6";
-import { IoDocumentTextSharp } from "react-icons/io5";
+import { FaDownload, FaFileArrowUp, FaFileLines } from "react-icons/fa6";
 import { RiCloseFill } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
@@ -102,9 +101,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-[330px] p-8 flex flex-col gap-2 bg-slate-800">
-      <h1 className="text-3xl font-bold text-slate-300">Muses</h1>
-      <div className="flex items-center justify-between p-2 bg-slate-500 rounded text-xl">
+    <div className="w-[330px] p-8 flex flex-col gap-2 bg-indigo-100 font-body">
+      <h1 className="text-3xl font-bold text-black">Muses</h1>
+      <div className="flex items-center justify-between p-2 bg-indigo-300 shadow-md rounded text-xl ">
         <input
           type="file"
           id="resumeInput"
@@ -114,26 +113,29 @@ export default function App() {
         />
         <label
           htmlFor="resumeInput"
-          className="cursor-pointer hover:text-slate-300 hover:underline transition"
+          className="flex gap-2 px-1 items-center cursor-pointer transition hover:text-indigo-700 hover:underline"
         >
           {resumeFile.name ? (
-            <span className="flex items-center gap-2">
-              <IoDocumentTextSharp />
+            <>
+              <FaFileLines />
               {resumeFile.name}
-            </span>
+            </>
           ) : (
-            "Choose resume"
+            <>
+              <FaFileArrowUp />
+              Upload Resume
+            </>
           )}
         </label>
         {!!resumeFile.name && (
           <RiCloseFill
-            className="hover:text-rose-700 cursor-pointer text-3xl transition"
+            className="hover:text-red-500 cursor-pointer text-3xl transition"
             onClick={clearResumeFile}
           />
         )}
       </div>
       <button
-        className="flex gap-2 py-2 px-4 justify-center items-center text-xl disabled:bg-gray-500 bg-teal-700 hover:bg-teal-900 text-slate-300 rounded transition"
+        className="flex gap-2 py-2 justify-center items-center text-xl disabled:bg-gray-500 bg-indigo-600 hover:bg-indigo-800 text-slate-300 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
         disabled={downloadDisabled}
         data-tooltip-id={downloadDisabled ? tooltipId : ""}
