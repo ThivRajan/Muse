@@ -3,6 +3,9 @@ export default {
   content: ["./src/**/*.{html,js,tsx,ts}"],
   theme: {
     extend: {},
+    fontFamily: {
+      body: ["Roboto Slab"],
+    },
   },
   plugins: [],
 };
