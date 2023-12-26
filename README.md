@@ -1,1 +1,1 @@
-# Muses - AI Cover Letter Generator
+# Muse - AI Cover Letter Generator
