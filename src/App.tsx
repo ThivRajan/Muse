@@ -102,7 +102,7 @@ export default function App() {
 
   return (
     <div className="w-[330px] p-8 flex flex-col gap-2 bg-indigo-100 font-body">
-      <h1 className="text-3xl font-bold text-black">Muses</h1>
+      <h1 className="text-3xl font-bold text-black">Muse</h1>
       <div className="flex items-center justify-between p-2 bg-indigo-300 shadow-md rounded text-xl ">
         <input
           type="file"
