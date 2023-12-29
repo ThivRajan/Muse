@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { FaDownload, FaFileArrowUp, FaFileLines } from "react-icons/fa6";
 import { RiCloseFill } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
@@ -20,7 +20,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(INITIAL_RESUME_FILE);
   const [isActive, setIsActive] = useState(false);
-  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setupTabListener();
@@ -107,7 +106,6 @@ export default function App() {
         <input
           type="file"
           id="resumeInput"
-          ref={resumeInputRef}
           className="hidden"
           onChange={handleResumeChange}
         />
