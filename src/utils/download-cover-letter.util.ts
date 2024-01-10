@@ -1,5 +1,6 @@
+import { BLANK_PDF, Font, Template } from "@pdfme/common";
+import { generate } from "@pdfme/generator";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
-import { jsPDF } from "jspdf";
 import { Dispatch, SetStateAction } from "react";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
@@ -65,29 +66,58 @@ function downloadFile(fileBlob: Blob, extension: "pdf" | "docx", name: string) {
 }
 
 async function convertTextToPdfBlob(text: string) {
+  const getMillimetres = (inches: number) => inches * 25.4;
+
   const pageWidth = 8.25;
-  const textColor = "#000000";
-
-  const doc = new jsPDF("p", "in", "a4");
+  const pageHeight = 11;
   const [name, ...body] = text.split("\n");
-  doc.setDrawColor(textColor);
-  doc.setFontSize(FONT_SIZE);
 
-  const wrappedBody = doc.splitTextToSize(
-    `\n\n${body.join("\n")}`,
-    pageWidth - MARGINS.x * 2
-  );
+  const font: Font = {
+    ["Regular"]: {
+      data: await fetch(`/fonts/${FONT}.ttf`).then((res) => res.arrayBuffer()),
+      fallback: true,
+    },
+    ["Bold"]: {
+      data: await fetch(`/fonts/${FONT}-Bold.ttf`).then((res) =>
+        res.arrayBuffer()
+      ),
+    },
+  };
 
-  doc
-    .setFont(FONT, "bold")
-    .setFontSize(FONT_SIZE * 2)
-    .text(name, MARGINS.x, MARGINS.y);
-  doc
-    .setFont(FONT, "normal")
-    .setFontSize(FONT_SIZE)
-    .text(wrappedBody, MARGINS.x, MARGINS.y);
+  const template: Template = {
+    basePdf: BLANK_PDF,
+    schemas: [
+      {
+        name: {
+          type: "text",
+          position: {
+            x: getMillimetres(MARGINS.x),
+            y: getMillimetres(MARGINS.y),
+          },
+          width: getMillimetres(pageWidth - 2 * MARGINS.x),
+          height: getMillimetres(pageHeight - 2 * MARGINS.y),
+          fontSize: FONT_SIZE * 2,
+          fontName: "Bold",
+        },
+        body: {
+          type: "text",
+          position: {
+            x: getMillimetres(MARGINS.x),
+            y: getMillimetres(MARGINS.y),
+          },
+          width: getMillimetres(pageWidth - 2 * MARGINS.x),
+          height: getMillimetres(pageHeight - 2 * MARGINS.y),
+          fontSize: FONT_SIZE,
+          fontName: "Regular",
+          lineHeight: 1.25,
+        },
+      },
+    ],
+  };
 
-  return doc.output("blob");
+  const inputs = [{ name, body: `\n\n\n${body.join("\n")}` }];
+  const pdf = await generate({ template, inputs, options: { font } });
+  return new Blob([pdf.buffer], { type: "application/pdf" });
 }
 
 async function convertTextToDocxBlob(text: string) {
