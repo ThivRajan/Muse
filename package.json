@@ -11,8 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pdfme/common": "^3.2.1",
+    "@pdfme/generator": "^3.2.1",
     "docx": "^8.2.4",
-    "jspdf": "^2.5.1",
     "mammoth": "^1.6.0",
     "pdfjs-dist": "^4.0.189",
     "react": "^18.2.0",
