@@ -35,11 +35,9 @@ export async function parseJobPosting() {
     (postingClass) => document.getElementsByClassName(postingClass).length
   );
 
-  if (!jobPostingClass) {
-    return "";
-  }
-
-  const jobContent = document.getElementsByClassName(jobPostingClass).item(0);
+  const jobContent = jobPostingClass
+    ? document.getElementsByClassName(jobPostingClass).item(0)
+    : document.body;
 
   const getTextContent = (element: HTMLElement) => {
     const range = document.createRange();
