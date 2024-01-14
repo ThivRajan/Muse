@@ -51,7 +51,8 @@ function getPrompt(jobDescription: string, resume: string) {
 
   return (
     `I am going to send you my resume along with a job description. ` +
-    `Here is the job description: \n\n${jobDescription}` +
+    `However, the job description is part of a larger block of text I'm going to send you. ` +
+    `Please extract the job description from this block and use that: \n\n${jobDescription}` +
     `\n\nHere is the resume: \n\n${resume}` +
     `\n\n${contentPrompt} ${formattingPrompt}`
   );
