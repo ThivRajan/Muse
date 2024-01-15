@@ -11,16 +11,5 @@
       "128": "logo-active.png"
     }
   },
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "downloads",
-    "background"
-  ],
-  "background": {
-    "service_worker": "service-worker.js",
-    "type": "module"
-  },
-  "host_permissions": ["http://*/*", "https://*/*"]
+  "permissions": ["storage", "activeTab", "scripting", "downloads"]
 }
