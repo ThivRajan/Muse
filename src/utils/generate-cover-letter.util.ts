@@ -75,15 +75,14 @@ function formatCoverLetter(coverLetter: string, resume: string) {
     getFormattedDate()
   );
 
-  const emailMatch = getEmailMatch(coverLetter);
-  const email = emailMatch?.[0];
+  const email = getEmailMatch(coverLetter)?.[0];
+  const number = getNumberMatch(coverLetter)?.[0];
 
   const patternsToRemove = [
-    /\n\(123\) 456-7890/g,
-    /\n123-456-7890/g,
     /\n(\[)?Phone Number(\])?/g,
-    /\nPhone: 123-456-7890/g,
-    ...(isFakeEmail(resume, email) ? [new RegExp(email || "", "g")] : []),
+    /\nPhone: /g,
+    ...insertPatternIfFake(resume, email),
+    ...insertPatternIfFake(resume, number),
   ];
   return patternsToRemove.reduce(
     (acc, pattern) => acc.replace(pattern, ""),
@@ -91,11 +90,19 @@ function formatCoverLetter(coverLetter: string, resume: string) {
   );
 }
 
-function isFakeEmail(resume: string, email?: string) {
-  return email && !resume.includes(email);
+function insertPatternIfFake(resume: string, contact?: string) {
+  return contact && !resume.includes(contact.replace("\n", ""))
+    ? [new RegExp(contact || "", "g")]
+    : [];
 }
 
 function getEmailMatch(coverLetter: string) {
   const emailPattern = /\n\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
   return emailPattern.exec(coverLetter);
+}
+
+function getNumberMatch(coverLetter: string) {
+  const numberPattern =
+    /\n?\b(?:\+\d{1,2}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+  return numberPattern.exec(coverLetter);
 }
