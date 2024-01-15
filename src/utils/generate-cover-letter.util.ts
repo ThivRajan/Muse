@@ -29,7 +29,7 @@ export async function generateCoverLetter(
   const coverLetter: string = responseJSON.choices[0].message.content;
   const name = coverLetter.split("\n")[0];
   return {
-    coverLetter: formatCoverLetter(coverLetter),
+    coverLetter: formatCoverLetter(coverLetter, resume),
     name,
   };
 }
@@ -69,20 +69,33 @@ function getFormattedDate() {
   );
 }
 
-function formatCoverLetter(coverLetter: string) {
+function formatCoverLetter(coverLetter: string, resume: string) {
   const dateFormattedLetter = coverLetter.replace(
     DATE_TOKEN,
     getFormattedDate()
   );
+
+  const emailMatch = getEmailMatch(coverLetter);
+  const email = emailMatch?.[0];
 
   const patternsToRemove = [
     /\n\(123\) 456-7890/g,
     /\n123-456-7890/g,
     /\n(\[)?Phone Number(\])?/g,
     /\nPhone: 123-456-7890/g,
+    ...(isFakeEmail(resume, email) ? [new RegExp(email || "", "g")] : []),
   ];
   return patternsToRemove.reduce(
     (acc, pattern) => acc.replace(pattern, ""),
     dateFormattedLetter
   );
+}
+
+function isFakeEmail(resume: string, email?: string) {
+  return email && !resume.includes(email);
+}
+
+function getEmailMatch(coverLetter: string) {
+  const emailPattern = /\n\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+  return emailPattern.exec(coverLetter);
 }
