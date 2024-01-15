@@ -81,6 +81,8 @@ function formatCoverLetter(coverLetter: string, resume: string) {
   const patternsToRemove = [
     /\n(\[)?Phone Number(\])?/g,
     /\nPhone: /g,
+    /\n(\[)?Email(\])?/g,
+    /\nEmail: /g,
     ...insertPatternIfFake(resume, email),
     ...insertPatternIfFake(resume, number),
   ];
