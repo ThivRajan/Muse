@@ -29,7 +29,7 @@ export async function generateCoverLetter(
   const coverLetter: string = responseJSON.choices[0].message.content;
   const name = coverLetter.split("\n")[0];
   return {
-    coverLetter: coverLetter.replace(DATE_TOKEN, getFormattedDate()),
+    coverLetter: formatCoverLetter(coverLetter),
     name,
   };
 }
@@ -66,5 +66,23 @@ function getFormattedDate() {
       month: "long",
       day: "numeric",
     }).format(new Date())
+  );
+}
+
+function formatCoverLetter(coverLetter: string) {
+  const dateFormattedLetter = coverLetter.replace(
+    DATE_TOKEN,
+    getFormattedDate()
+  );
+
+  const patternsToRemove = [
+    /\n\(123\) 456-7890/g,
+    /\n123-456-7890/g,
+    /\n(\[)?Phone Number(\])?/g,
+    /\nPhone: 123-456-7890/g,
+  ];
+  return patternsToRemove.reduce(
+    (acc, pattern) => acc.replace(pattern, ""),
+    dateFormattedLetter
   );
 }
