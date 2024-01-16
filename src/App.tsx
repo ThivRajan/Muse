@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { FaDownload, FaFileArrowUp, FaFileLines } from "react-icons/fa6";
 import { RiCloseFill } from "react-icons/ri";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
@@ -111,6 +113,15 @@ export default function App() {
       <Tooltip
         id={tooltipId}
         style={{ fontSize: "1rem", width: "30ch", textAlign: "center" }}
+      />
+      <ToastContainer
+        position="top-center"
+        autoClose={800}
+        hideProgressBar={true}
+        closeOnClick
+        rtl={false}
+        theme="dark"
+        style={{ fontSize: "1.2em" }}
       />
     </div>
   );
