@@ -2,12 +2,14 @@ import { BLANK_PDF, Font, Template } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import { Dispatch, SetStateAction } from "react";
+import { toast } from "react-toastify";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
 
 const FONT = "Helvetica";
 const FONT_SIZE = 12;
 const MARGINS = { x: 0.75, y: 1 }; // Measured in inches
+const ERROR_TOAST_ID = "error-msg";
 
 export async function downloadCoverLetter(
   resume: string,
@@ -23,7 +25,14 @@ export async function downloadCoverLetter(
   }: {
     jobPostingText: string;
   }) => {
-    if (!jobPostingText) return;
+    if (!jobPostingText) {
+      if (!toast.isActive(ERROR_TOAST_ID)) {
+        toast.error("Unable to read job posting on this page", {
+          toastId: ERROR_TOAST_ID,
+        });
+      }
+      return;
+    }
 
     const { coverLetter, name } = await generateCoverLetter(
       jobPostingText,
