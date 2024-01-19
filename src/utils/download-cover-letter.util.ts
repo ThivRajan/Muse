@@ -9,7 +9,6 @@ import { parseJobPosting } from "./parse-job-posting.util";
 const FONT = "Helvetica";
 const FONT_SIZE = 12;
 const MARGINS = { x: 0.75, y: 1 }; // Measured in inches
-const ERROR_TOAST_ID = "error-msg";
 
 export async function downloadCoverLetter(
   resume: string,
