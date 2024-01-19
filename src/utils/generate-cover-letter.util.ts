@@ -6,7 +6,11 @@ export async function generateCoverLetter(
   jobDescription: string,
   resume: string,
   setIsLoading: Dispatch<SetStateAction<boolean>>
-) {
+): Promise<{
+  coverLetter: string;
+  name: string;
+  error?: any;
+}> {
   setIsLoading(true);
   const response = await fetch(import.meta.env.VITE_COVER_LETTER_API, {
     method: "POST",
@@ -22,11 +26,10 @@ export async function generateCoverLetter(
 
   const responseJSON = await response.json();
   if (responseJSON.error) {
-    console.error(responseJSON.error);
-    return;
+    return { coverLetter: "", name: "", error: responseJSON.error };
   }
 
-  const coverLetter = responseJSON.coverLetter;
+  const coverLetter = responseJSON.coverLetter as string;
   const name = coverLetter.split("\n")[0];
   return {
     coverLetter: formatCoverLetter(coverLetter, resume),

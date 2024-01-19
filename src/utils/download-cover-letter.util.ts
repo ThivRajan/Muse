@@ -2,7 +2,7 @@ import { BLANK_PDF, Font, Template } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import { Dispatch, SetStateAction } from "react";
-import { toast } from "react-toastify";
+import { showErrorMessage } from "./error-message.util";
 import { generateCoverLetter } from "./generate-cover-letter.util";
 import { parseJobPosting } from "./parse-job-posting.util";
 
@@ -26,19 +26,21 @@ export async function downloadCoverLetter(
     jobPostingText: string;
   }) => {
     if (!jobPostingText) {
-      if (!toast.isActive(ERROR_TOAST_ID)) {
-        toast.error("Unable to read job posting on this page", {
-          toastId: ERROR_TOAST_ID,
-        });
-      }
+      showErrorMessage("Unable to read job posting on this page");
       return;
     }
 
-    const { coverLetter, name } = await generateCoverLetter(
+    const { coverLetter, name, error } = await generateCoverLetter(
       jobPostingText,
       resume,
       setIsLoading
     );
+
+    if (error) {
+      showErrorMessage(error);
+      return;
+    }
+
     downloadPdf(coverLetter, name);
     downloadDocx(coverLetter, name);
   };
