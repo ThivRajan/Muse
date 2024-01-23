@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "react-tooltip";
 import Loader from "./Loader";
+import bmcLogo from "./assets/bmc-logo.svg";
 import { downloadCoverLetter } from "./utils/download-cover-letter.util";
 import { parseResume } from "./utils/parse-resume.util";
 import {
@@ -67,8 +68,13 @@ export default function App() {
     }
   };
 
+  const visitDonationPage = () => {
+    const port = chrome.runtime.connect({ name: "visitDonationPage" });
+    port.postMessage({ donationPage: "https://www.buymeacoffee.com/thiv" });
+  };
+
   return (
-    <div className="w-[330px] p-8 flex flex-col gap-2 bg-slate-100 font-body">
+    <div className="w-[330px] px-8 py-6 flex flex-col gap-2 bg-slate-100 font-body">
       <h1 className="text-3xl font-bold text-black">Muse</h1>
       <div className="flex items-center justify-between p-2 bg-slate-300 shadow-md rounded text-xl ">
         <input
@@ -109,6 +115,18 @@ export default function App() {
       >
         <FaDownload /> Download Cover Letter
       </button>
+      <i
+        className="cursor-pointer hover:text-amber-600 transition"
+        onClick={visitDonationPage}
+      >
+        If you found Muse helpful, a
+        <img
+          src={bmcLogo}
+          alt="Buy me a coffee"
+          className="inline ml-2 mr-1 w-[2ch]"
+        />
+        would be appreciated!
+      </i>
       <Loader isLoading={isLoading} />
       <Tooltip
         id={tooltipId}
