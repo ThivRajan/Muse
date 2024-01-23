@@ -74,9 +74,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-[330px] px-8 py-6 flex flex-col gap-2 bg-indigo-100 font-body">
+    <div className="w-[330px] px-8 py-6 flex flex-col gap-2 bg-slate-100 font-body">
       <h1 className="text-3xl font-bold text-black">Muse</h1>
-      <div className="flex items-center justify-between p-2 bg-indigo-300 shadow-md rounded text-xl ">
+      <div className="flex items-center justify-between p-2 bg-slate-300 shadow-md rounded text-xl ">
         <input
           type="file"
           id="resumeInput"
@@ -85,7 +85,7 @@ export default function App() {
         />
         <label
           htmlFor="resumeInput"
-          className="flex gap-2 px-1 items-center cursor-pointer transition hover:text-indigo-700 hover:underline"
+          className="flex gap-2 px-1 items-center cursor-pointer transition hover:text-slate-600 hover:underline"
         >
           {resumeFile.name ? (
             <>
@@ -107,7 +107,7 @@ export default function App() {
         )}
       </div>
       <button
-        className="flex gap-2 py-2 justify-center items-center text-xl disabled:bg-gray-500 bg-indigo-600 hover:bg-indigo-800 text-slate-300 rounded transition"
+        className="flex gap-2 py-2 justify-center items-center text-xl disabled:bg-gray-400 bg-slate-600 hover:bg-slate-800 text-neutral-200 rounded transition"
         onClick={() => downloadCoverLetter(resumeFile.contents, setIsLoading)}
         disabled={!resumeFile.contents}
         data-tooltip-id={resumeFile.contents ? "" : tooltipId}
@@ -116,15 +116,14 @@ export default function App() {
         <FaDownload /> Download Cover Letter
       </button>
       <i
-        className="cursor-pointer hover:text-indigo-500"
+        className="cursor-pointer hover:text-amber-600 transition"
         onClick={visitDonationPage}
       >
         If you found Muse helpful, a
         <img
           src={bmcLogo}
           alt="Buy me a coffee"
-          className="ml-2 mr-1"
-          style={{ display: "inline-block", width: "2ch" }}
+          className="inline ml-2 mr-1 w-[2ch]"
         />
         would be appreciated!
       </i>
