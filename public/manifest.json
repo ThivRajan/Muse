@@ -6,9 +6,9 @@
   "action": {
     "default_popup": "index.html",
     "default_icon": {
-      "16": "logo-active.png",
-      "48": "logo-active.png",
-      "128": "logo-active.png"
+      "16": "muse-logo.png",
+      "48": "muse-logo.png",
+      "128": "muse-logo.png"
     }
   },
   "permissions": [
