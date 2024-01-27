@@ -12,29 +12,38 @@ export async function generateCoverLetter(
   error?: any;
 }> {
   setIsLoading(true);
-  const response = await fetch(import.meta.env.VITE_COVER_LETTER_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jobDescription,
-      resume,
-    }),
-  });
-  setIsLoading(false);
+  try {
+    const response = await fetch(import.meta.env.VITE_COVER_LETTER_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobDescription,
+        resume,
+      }),
+    });
+    setIsLoading(false);
+    const responseJSON = await response.json();
 
-  const responseJSON = await response.json();
-  if (responseJSON.error) {
-    return { coverLetter: "", name: "", error: responseJSON.error };
+    if (responseJSON.error) {
+      return { coverLetter: "", name: "", error: responseJSON.error };
+    }
+
+    const coverLetter = responseJSON.coverLetter as string;
+    const name = coverLetter.split("\n")[0];
+    return {
+      coverLetter: formatCoverLetter(coverLetter, resume),
+      name,
+    };
+  } catch (error) {
+    setIsLoading(false);
+    return {
+      coverLetter: "",
+      name: "",
+      error: "Unable to generate cover letter",
+    };
   }
-
-  const coverLetter = responseJSON.coverLetter as string;
-  const name = coverLetter.split("\n")[0];
-  return {
-    coverLetter: formatCoverLetter(coverLetter, resume),
-    name,
-  };
 }
 
 function getFormattedDate() {
