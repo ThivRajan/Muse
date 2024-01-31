@@ -1,5 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { FaDownload, FaFileArrowUp, FaFileLines } from "react-icons/fa6";
+import {
+  FaDownload,
+  FaFileArrowUp,
+  FaFileLines,
+  FaGithub,
+} from "react-icons/fa6";
 import { RiCloseFill } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -73,6 +78,13 @@ export default function App() {
     port.postMessage({ donationPage: "https://www.buymeacoffee.com/thiv" });
   };
 
+  const visitGithubPage = () => {
+    const port = chrome.runtime.connect({ name: "visitDonationPage" });
+    port.postMessage({
+      donationPage: "https://github.com/ThivagarNadarajan/Muse",
+    });
+  };
+
   return (
     <div className="w-[330px] px-8 py-6 flex flex-col gap-2 bg-slate-100 font-body">
       <h1 className="text-3xl font-bold text-black">Muse</h1>
@@ -126,6 +138,12 @@ export default function App() {
           className="inline ml-2 mr-1 w-[2ch]"
         />
         would be appreciated!
+      </i>
+      <i
+        onClick={visitGithubPage}
+        className="text-xs hover:text-sky-600 cursor-pointer"
+      >
+        <FaGithub className="inline" /> You can find the source code here.
       </i>
       <Loader isLoading={isLoading} />
       <Tooltip
