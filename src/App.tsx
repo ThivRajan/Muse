@@ -73,15 +73,10 @@ export default function App() {
     }
   };
 
-  const visitDonationPage = () => {
-    const port = chrome.runtime.connect({ name: "visitDonationPage" });
-    port.postMessage({ donationPage: "https://www.buymeacoffee.com/thiv" });
-  };
-
-  const visitGithubPage = () => {
-    const port = chrome.runtime.connect({ name: "visitDonationPage" });
+  const visitUrl = (url: string) => {
+    const port = chrome.runtime.connect({ name: "visitUrl" });
     port.postMessage({
-      donationPage: "https://github.com/ThivagarNadarajan/Muse",
+      url,
     });
   };
 
@@ -129,7 +124,7 @@ export default function App() {
       </button>
       <i
         className="cursor-pointer hover:text-amber-600 transition"
-        onClick={visitDonationPage}
+        onClick={() => visitUrl("https://www.buymeacoffee.com/thiv")}
       >
         If you found Muse helpful, a
         <img
@@ -140,7 +135,7 @@ export default function App() {
         would be appreciated!
       </i>
       <i
-        onClick={visitGithubPage}
+        onClick={() => visitUrl("https://github.com/ThivagarNadarajan/Muse")}
         className="text-xs hover:text-sky-600 cursor-pointer"
       >
         <FaGithub className="inline" /> You can find the source code here.

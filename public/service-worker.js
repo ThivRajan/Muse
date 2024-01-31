@@ -1,7 +1,7 @@
 chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener(async ({ donationPage }) => {
-    if (donationPage) {
-      chrome.tabs.create({ url: donationPage });
+  port.onMessage.addListener(async ({ url }) => {
+    if (url) {
+      chrome.tabs.create({ url });
     }
   });
 });
