@@ -14,7 +14,7 @@ export async function generateCoverLetter(
 }> {
   setIsLoading(true);
   try {
-    const coverLetter = await (import.meta.env.VITE_CUSTOM_COVER_LETTER
+    const coverLetter = await (import.meta.env.VITE_CUSTOM_COVER_LETTER_ENDPOINT
       ? getCustomCoverLetter(jobDescription, resume)
       : getOpenAICoverLetter(jobDescription, resume));
     setIsLoading(false);

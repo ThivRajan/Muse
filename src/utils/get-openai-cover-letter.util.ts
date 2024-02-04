@@ -2,7 +2,7 @@ export async function getOpenAICoverLetter(
   jobDescription: string,
   resume: string
 ) {
-  const response = await fetch(import.meta.env.VITE_OPENAI_ENDPOINT, {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
