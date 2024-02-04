@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { formatCoverLetter } from "./format-cover-letter.util";
+import { getCustomCoverLetter } from "./get-custom-cover-letter.util";
+import { getOpenAICoverLetter } from "./get-openai-cover-letter.util";
 
 export async function generateCoverLetter(
   jobDescription: string,
@@ -12,24 +14,11 @@ export async function generateCoverLetter(
 }> {
   setIsLoading(true);
   try {
-    const response = await fetch(import.meta.env.VITE_COVER_LETTER_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jobDescription,
-        resume,
-      }),
-    });
+    const coverLetter = await (import.meta.env.USE_CUSTOM_COVER_LETTER
+      ? getCustomCoverLetter(jobDescription, resume)
+      : getOpenAICoverLetter(jobDescription, resume));
     setIsLoading(false);
-    const responseJSON = await response.json();
 
-    if (responseJSON.error) {
-      return { coverLetter: "", name: "", error: responseJSON.error };
-    }
-
-    const coverLetter = responseJSON.coverLetter as string;
     const name = coverLetter.split("\n")[0];
     return {
       coverLetter: formatCoverLetter(coverLetter, resume),
