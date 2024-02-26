@@ -26,9 +26,9 @@ function getPrompt(jobDescription: string, resume: string) {
   const DATE_TOKEN = "[Date]";
 
   const contentPrompt =
-    `Craft a compelling cover letter that accurately highlights ` +
-    `my experience and achievements based on the provided resume and job description. ` +
-    `Keep it within ${wordCount} words. PLEASE be truthful with respect to my resume, when you describe my responsibitilies in the cover letter.`;
+    `Please craft a compelling cover letter within ${wordCount} words using the provided and job description. ` +
+    `Ensure the cover letter subtly relates the resume's experience ` +
+    `to demonstrate how it aligns with the job description, showcasing value.`;
 
   const formattingPrompt =
     `Include ONLY the following details at the top of the cover letter in this EXACT order, each on a separate line:` +
